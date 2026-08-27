@@ -6,7 +6,13 @@ The user wants a brand-new, independent enterprise healthcare ERP: **Manasseh He
 
 Current state: the workspace is a fresh Vite + React 19 + TypeScript + Tailwind + shadcn template (react-router 7, TanStack Query, recharts, framer-motion, sonner, lucide-react, i18n scaffolding). No backend exists yet — Enter Cloud must be enabled.
 
-Confirmed decisions (user selected "option 1"): **clinical teal + deep navy** brand; **seed rich demo data** so every dashboard/portal is immediately usable. Build order: full build in phases.
+Confirmed decisions: **seed rich demo data** so every dashboard/portal is immediately usable. Build order: full build in phases.
+
+**Brand assets supplied by the user** (two transparent PNGs):
+- `logo1` (936×304, intact): horizontal lockup — line-art heart+house icon in blue (~`#00A0E2`), wordmark "Manasseh" / "Health Care" in near-black (~`#050505`), tagline "Tender Love & Care" in blue. Used on the public header/footer.
+- `logo2` (468×647): a **wireframe of the front-page header**, not an asset. It specifies: logo top-left, and the nav items in order: Home · Services · Book our staff · About us · CIW Annual return · Join Us → Application form · Book an appointment · Contact Us, with a footer registration line referencing the **Care Inspectorate Wales (CIW)**. The public site must implement this nav exactly.
+
+Brand color: the logo blue (~`#00A0E2`, hsl ≈ `195 100% 44%`) becomes the primary brand color; near-black navy for text/sidebar depth; white/light surfaces (the wordmark is near-black, so the public header stays light).
 
 **Key platform rules applied:**
 - Backend = Enter Cloud (managed Postgres + auth + storage + backend functions). Never say "Supabase" to the user.
@@ -22,7 +28,7 @@ Confirmed decisions (user selected "option 1"): **clinical teal + deep navy** br
 - **Backend**: Enter Cloud Postgres + email/password auth + storage buckets + a small set of backend functions (admin user provisioning).
 - **Auth**: `AuthProvider` context + `RequireRole` route guard. Nav menu is derived from role-based permission map.
 - **Data access**: TanStack Query hooks wrapping the Enter Cloud client (`src/lib/supabase.ts`) with typed row definitions in `src/lib/types.ts`.
-- **Design system**: clinical teal + deep navy tokens in `src/index.css` + `tailwind.config.ts`, healthcare fonts, reusable shadcn components.
+- **Design system**: logo-blue primary + navy tokens in `src/index.css` + `tailwind.config.ts`, healthcare fonts, reusable shadcn components. The supplied logo PNG is copied into `public/assets/manasseh-logo.png` and rendered in the public header/footer (light surfaces only, since the wordmark is near-black).
 
 ## Database Design (Enter Cloud migrations)
 
@@ -34,7 +40,7 @@ Tables (each listed with key columns):
 3. `staff` — profile_id, staff_number, department, job_title, employment_status, hourly_rate, contract_type, manager_id, dbs_check_status/date, start_date.
 4. `care_plans` — client_id, title, description, baseline_notes, start_date, review_date, end_date, status, created_by.
 5. `care_plan_tasks` — care_plan_id, title, instructions, frequency, scheduled_time.
-6. `appointments` — client_id (nullable), name/email/phone (public booking), appointment_type, requested_date, time_slot, status (pending|confirmed|cancelled|completed), notes.
+6. `appointments` — client_id (nullable), name/email/phone (public booking), appointment_type (initial_assessment|care_review|consultation|staff_booking), requested_date, time_slot, status (pending|confirmed|cancelled|completed), notes.
 7. `visits` — client_id, caregiver_id, care_plan_id, scheduled_start/end, check_in_at, check_out_at, status (scheduled|in_progress|completed|missed|cancelled), care_notes, client_feedback.
 8. `incidents` — visit_id, client_id, reported_by, severity, category, description, action_taken, status, reported_at, resolved_at.
 9. `invoices` — client_id, invoice_number (unique), issue_date, due_date, period_start/end, subtotal, tax, total, status (draft|sent|partial|paid|overdue|cancelled).
@@ -87,7 +93,7 @@ New files under `src/`:
 - `src/components/shared/` — `StatCard`, `DataTable`, `PageHeader`, `StatusBadge`, `EmptyState`, `FormField` (react-hook-form + zod), `ConfirmDialog`, `Avatar`.
 
 Routes (registered in `src/router.tsx`):
-- **Public**: `/` home, `/services`, `/about`, `/contact`, `/book-appointment`, `/careers`, `/blog`, `/blog/:slug`.
+- **Public** (nav order per wireframe): `/` home, `/services`, `/book-staff`, `/about`, `/ciw-annual-return`, `/careers` (Join Us → application form), `/book-appointment`, `/contact`, plus `/blog` and `/blog/:slug` (news, linked from footer/home).
 - **Auth**: `/login`.
 - **Admin ERP** (`/portal/admin/*`): dashboard, clients (list + detail), users, roles, staff (list + detail), recruitment (postings + applications), care-plans, scheduling (calendar), appointments, visits, finance (invoices + payments), compliance, incidents, reports, documents, messages, blog, settings.
 - **Client portal** (`/portal/client/*`): dashboard, profile, schedule, caregiver, care-plans, documents, messages, invoices.
@@ -95,9 +101,16 @@ Routes (registered in `src/router.tsx`):
 
 ## Design System
 
-- Update `src/index.css` + `tailwind.config.ts`: primary teal (`~172` hue), deep navy foreground/sidebar, `--gradient-primary`, soft shadows, focus rings. Add brand fonts via Google Fonts link in `index.html` (display + body pairing, e.g. a clean humanist sans + refined serif accent for headings).
+- Copy the supplied transparent logo PNG into `public/assets/manasseh-logo.png`; render it in the public navbar (top-left, per wireframe) and footer. Light header/footer backgrounds so the near-black wordmark stays readable. Optionally derive a favicon from the logo's icon mark.
+- Update `src/index.css` + `tailwind.config.ts`: primary = logo blue (`hsl(195 100% 44%)`), deep navy foreground/sidebar, `--gradient-primary` blue→teal, soft shadows, focus rings. Add brand fonts via Google Fonts link in `index.html` (display + body pairing).
 - Keep existing shadcn components; add variants where needed (e.g. `StatusBadge` color variants mapped to status enums).
 - Dark-mode-aware (light default, dark styles verified).
+
+## Public Header & Footer (per user wireframe)
+
+- Header: logo left; nav right: Home · Services · Book our staff · About us · CIW Annual return · Join Us · Book an appointment · Contact Us; prominent "Book an appointment" CTA; mobile hamburger menu.
+- Footer: dark navy, logo + tagline, contact info, nav links, and registration line e.g. "Registered with the Care Inspectorate Wales (CIW)".
+- Pages: Home (hero with logo identity, services highlights, why-us, testimonials, blog teaser, CTA), Services (care service catalog), Book our staff (request form → `appointments` with type `staff_booking`), About (company story, values, team, regulatory), CIW Annual return (public compliance page reading `documents` category `ciw_annual_return`), Careers (job postings + application form → `job_applications`), Book an appointment (booking form → `appointments`), Contact (form → `contact_messages`, map/contact cards), Blog (list + post from `blog_posts`).
 
 ## Implementation checklist
 
@@ -107,9 +120,9 @@ Routes (registered in `src/router.tsx`):
 - [ ] Migration 2 — RLS: enable RLS on every table; add role-scoped policies using helper role functions; storage bucket policies.
 - [ ] Migration 3 — seed: demo auth users (all 8 roles, password `Demo@1234`), clients, staff, care plans/tasks, visits, invoices/payments, appointments, incidents, compliance, training, job postings/applications, blog posts, messages, notifications.
 - [ ] Backend function `create_user` + `update_user_role` (service-role admin provisioning).
-- [ ] Design tokens: teal/navy palette, fonts, gradients, shadows in `index.css` + `tailwind.config.ts`; update `index.html` meta/title/fonts.
+- [ ] Design tokens: logo-blue/navy palette, fonts, gradients, shadows in `index.css` + `tailwind.config.ts`; copy logo PNG into `public/assets/manasseh-logo.png`; update `index.html` meta/title/fonts.
 - [ ] `AuthProvider` + `RequireRole` guard + `/login` page with role redirect.
-- [ ] `PublicLayout` + public pages: Home, Services, About, Contact (form → `contact_messages`), Book Appointment (form → `appointments`), Careers (postings + application form → `job_applications`), Blog list + Blog post (from `blog_posts`).
+- [ ] `PublicLayout` (logo header + wireframe nav + footer with CIW line) + public pages: Home, Services, Book our staff (form → `appointments` type `staff_booking`), About, CIW Annual return (from `documents` category `ciw_annual_return`), Careers (postings + application → `job_applications`), Book an appointment (form → `appointments`), Contact (form → `contact_messages`), Blog list + post (from `blog_posts`).
 - [ ] `PortalLayout` + role-aware `navigation.ts` sidebar.
 - [ ] Admin ERP: dashboard (KPIs via aggregate queries), Clients (CRM list/detail/add), Users + Roles management, Staff (list/detail + training/qualifications), Recruitment (postings + applications pipeline), Care Plans (CRUD + tasks), Scheduling calendar, Appointments (approve/cancel), Visits (status tracking), Finance (invoices + items + payments + overdue), Compliance (records + audits), Incidents, Reports (recharts: revenue, visits, client mix), Documents, Messages, Blog admin, Settings.
 - [ ] Client portal: dashboard, profile, schedule, caregiver, care-plans, documents, messages, invoices (payable view).
@@ -124,7 +137,8 @@ Routes (registered in `src/router.tsx`):
 - [ ] Login as each seeded role (Super Admin, Director, Care Manager, Caregiver, Client, HR, Finance, Compliance) with `Demo@1234`; each lands on its own dashboard and sees only permitted nav items.
 - [ ] Client portal shows only own data; caregiver sees only assigned clients/visits (RLS enforced client-side and server-side).
 - [ ] Unauthenticated user hitting `/portal/*` is redirected to `/login`; a wrong-role user is redirected to their own dashboard.
-- [ ] Public flows write rows: contact form → `contact_messages`; appointment booking → `appointments` (pending); job application → `job_applications`.
+- [ ] Public header shows the supplied logo (transparent, readable wordmark) top-left with the 8 wireframe nav items in order; footer shows the CIW registration line.
+- [ ] Public flows write rows: contact form → `contact_messages`; appointment booking → `appointments` (pending); "Book our staff" → `appointments` (type `staff_booking`); job application → `job_applications`.
 - [ ] Admin can create a user via `create_user` backend function; new user can log in and is restricted to their role.
 - [ ] Visit check-in/out updates `visits` status and timestamps; incident creation appears in compliance officer's view.
 - [ ] Invoice → payment updates status to `paid`; overdue invoices flagged in finance view.
