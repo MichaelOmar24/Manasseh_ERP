@@ -162,9 +162,9 @@ export function PublicLayout() {
         <div className="container grid gap-10 py-14 md:grid-cols-4">
           <div className="md:col-span-1">
             <img
-               src="/assets/manasseh-logo-white-full.png"
+              src="/assets/manasseh-logo-white-full.png"
               alt="Manasseh Health Care"
-              className="h-14 w-auto"
+              className="h-20 w-auto drop-shadow-[0_0_24px_rgba(255,255,255,0.25)]"
             />
             <p className="mt-4 text-sm leading-relaxed text-sidebar-foreground/80">
               Compassionate home care across South Wales, delivered with tender love and care.

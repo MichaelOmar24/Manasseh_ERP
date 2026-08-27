@@ -81,9 +81,16 @@ export default function Login() {
       {/* Brand panel */}
       <div className="gradient-brand relative hidden overflow-hidden p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute inset-0 bg-[radial-gradient(50rem_30rem_at_20%_10%,hsl(0_0%_100%/0.18),transparent)]" />
-        <Link to="/" className="relative inline-flex w-fit items-center rounded-2xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
-          <img src="/assets/manasseh-logo.png" alt="Manasseh Health Care" className="h-12 w-auto" />
-        </Link>
+        <div className="relative">
+          <div className="absolute -inset-x-10 -inset-y-8 rounded-[2.5rem] bg-white/20 blur-2xl" aria-hidden />
+          <Link to="/" className="relative inline-flex">
+            <img
+              src="/assets/manasseh-logo-white-full.png"
+              alt="Manasseh Health Care"
+              className="h-28 w-auto drop-shadow-[0_14px_32px_rgba(0,0,0,0.45)]"
+            />
+          </Link>
+        </div>
         <div className="relative max-w-md">
           <p className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold">
             <ShieldCheck className="h-3.5 w-3.5" /> Secure staff & client portal
