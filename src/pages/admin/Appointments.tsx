@@ -13,6 +13,7 @@ const typeLabel: Record<string, string> = {
   care_review: "Care review",
   consultation: "Consultation",
   staff_booking: "Staff booking",
+  cleaning_booking: "Cleaning booking",
 };
 
 export default function Appointments() {

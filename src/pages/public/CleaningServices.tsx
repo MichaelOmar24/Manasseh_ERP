@@ -53,7 +53,7 @@ export default function CleaningServices() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90" asChild>
-              <Link to="/book-staff">
+              <Link to="/book-cleaning">
                 <CalendarCheck className="h-4 w-4" /> Book a clean
               </Link>
             </Button>
@@ -176,10 +176,10 @@ export default function CleaningServices() {
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <Button size="lg" asChild>
-                <Link to="/book-staff">Book a clean</Link>
+                <Link to="/book-cleaning">Book a clean</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-sidebar-accent bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-accent/80" asChild>
-                <Link to="/book-appointment">Request a call back</Link>
+                <Link to="/book-cleaning">Request a call back</Link>
               </Button>
             </div>
           </div>

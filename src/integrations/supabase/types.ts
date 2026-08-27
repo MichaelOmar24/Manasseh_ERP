@@ -4488,6 +4488,7 @@ export type Database = {
         | "care_review"
         | "consultation"
         | "staff_booking"
+        | "cleaning_booking"
       care_plan_status: "active" | "review" | "archived"
       compliance_status: "pending" | "active" | "expiring" | "expired"
       incident_category:
@@ -5763,6 +5764,7 @@ export const Constants = {
         "care_review",
         "consultation",
         "staff_booking",
+        "cleaning_booking",
       ],
       care_plan_status: ["active", "review", "archived"],
       compliance_status: ["pending", "active", "expiring", "expired"],

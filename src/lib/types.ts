@@ -88,7 +88,7 @@ export type Appointment = {
   name: string | null;
   email: string | null;
   phone: string | null;
-  appointment_type: "initial_assessment" | "care_review" | "consultation" | "staff_booking";
+  appointment_type: "initial_assessment" | "care_review" | "consultation" | "staff_booking" | "cleaning_booking";
   requested_date: string | null;
   time_slot: string | null;
   status: "pending" | "confirmed" | "cancelled" | "completed";
