@@ -155,8 +155,8 @@ export default function BookAppointment() {
               Our friendly care coordinators are available Monday to Friday, 9am–5pm.
             </p>
             <div className="mt-4 space-y-2 text-sm">
-              <p className="flex items-center gap-2"><PhoneCall className="h-4 w-4 text-primary" /> 029 2074 0000</p>
-              <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary" /> info@manasseh.care</p>
+              <p className="flex items-center gap-2"><PhoneCall className="h-4 w-4 text-primary" /> <a href="tel:+447801480923" className="hover:text-foreground">+44 7801 480923</a></p>
+              <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary" /> <a href="mailto:info@manassehhealthcare.org" className="hover:text-foreground">info@manassehhealthcare.org</a></p>
             </div>
           </Card>
           <Card className="p-6 shadow-soft">

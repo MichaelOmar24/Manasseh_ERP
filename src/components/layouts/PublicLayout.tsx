@@ -131,7 +131,7 @@ export function PublicLayout() {
           <div>
             <h4 className="font-display text-lg font-semibold">Our Services</h4>
             <ul className="mt-4 space-y-2 text-sm text-sidebar-foreground/80">
-              {["Domiciliary Care", "Live-in Care", "Dementia Support", "Respite Care", "Companionship"].map((s) => (
+              {["Home Care", "Live-in Care", "Dementia & Palliative Care", "Respite Care", "Medication Support"].map((s) => (
                 <li key={s}>
                   <Link to="/services" className="transition-colors hover:text-sidebar-foreground">
                     {s}
@@ -146,15 +146,15 @@ export function PublicLayout() {
             <ul className="mt-4 space-y-3 text-sm text-sidebar-foreground/80">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-                12 Birch Grove, Cardiff CF14 3ET
+                9 Kilvey Terrace, St Thomas,<br />Swansea SA1 8BA
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 shrink-0" />
-                <a href="tel:+442920740000" className="hover:text-sidebar-foreground">029 2074 0000</a>
+                <a href="tel:+447801480923" className="hover:text-sidebar-foreground">+44 7801 480923</a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 shrink-0" />
-                <a href="mailto:info@manasseh.care" className="hover:text-sidebar-foreground">info@manasseh.care</a>
+                <a href="mailto:info@manassehhealthcare.org" className="hover:text-sidebar-foreground">info@manassehhealthcare.org</a>
               </li>
             </ul>
           </div>
@@ -164,7 +164,7 @@ export function PublicLayout() {
           <div className="container flex flex-col items-center justify-between gap-2 py-5 text-center text-xs text-sidebar-foreground/70 sm:flex-row sm:text-left">
             <p className="flex items-center gap-1.5">
               <HeartPulse className="h-3.5 w-3.5" />
-              Registered with the Care Inspectorate Wales (CIW) - Tender Love &amp; Care since 2018.
+              Registered with the Care Inspectorate Wales (CIW) - Tender Love &amp; Care since 2024.
             </p>
             <p>© {new Date().getFullYear()} Manasseh Health Care. All rights reserved.</p>
           </div>

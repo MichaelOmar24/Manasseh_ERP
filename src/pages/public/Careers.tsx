@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { MapPin, Clock, BadgePoundSterling, Send, GraduationCap } from "lucide-react";
+import { MapPin, Clock, BadgePoundSterling, Send, GraduationCap, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -63,6 +63,23 @@ export default function Careers() {
       </section>
 
       <section className="container py-14">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-primary/15 bg-primary/5 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-semibold">Questions about joining?</h2>
+              <p className="text-sm text-muted-foreground">Our team is happy to talk you through the process.</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <p className="flex items-center gap-2"><Phone className="h-4 w-4 text-primary" /> <a href="tel:+447801480923" className="hover:text-foreground">+44 7801 480923</a></p>
+            <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary" /> <a href="mailto:info@manassehhealthcare.org" className="hover:text-foreground">info@manassehhealthcare.org</a></p>
+            <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> 9 Kilvey Terrace, Swansea SA1 8BA</p>
+          </div>
+        </div>
+
         <h2 className="font-display text-2xl font-semibold tracking-tight">Current vacancies</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (

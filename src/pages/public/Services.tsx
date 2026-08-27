@@ -4,56 +4,63 @@ import {
   HandHeart,
   Users,
   Clock,
-  Baby,
   Pill,
   Sparkles,
   ArrowRight,
   CalendarCheck,
   Stethoscope,
+  Home,
+  Activity,
+  LifeBuoy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const catalog = [
   {
-    icon: HeartPulse,
-    title: "Personal & Domiciliary Care",
-    text: "Assistance with washing, dressing, medication prompts and daily living — always on your terms, in your own home.",
+    icon: Stethoscope,
+    title: "Medical Care",
+    text: "Primary care consultations, chronic disease management, medication management and wound care — at home.",
   },
   {
-    icon: Pill,
-    title: "Medication Support",
-    text: "Prompting and administering medication with careful recording, so you never miss a dose.",
+    icon: HeartPulse,
+    title: "Nursing Care",
+    text: "Skilled nursing assessments and interventions, IV therapy, catheter and diabetes care.",
+  },
+  {
+    icon: Home,
+    title: "Home Health Services",
+    text: "Home visits by registered nurses and carers, medication support, personal hygiene and meal preparation.",
   },
   {
     icon: HandHeart,
-    title: "Live-in Care",
-    text: "A dedicated carer living in your home, providing round-the-clock companionship and support.",
+    title: "Dementia & Palliative Care",
+    text: "Compassionate memory support, pain and symptom management, and dignified end-of-life care.",
+  },
+  {
+    icon: Activity,
+    title: "Rehabilitation",
+    text: "Physical, occupational and speech therapy to rebuild strength, mobility and independence.",
   },
   {
     icon: Users,
-    title: "Dementia & Memory Support",
-    text: "Specialist, patient carers trained to support people living with dementia with dignity.",
+    title: "Disability Support",
+    text: "Personal care, mobility assistance, adaptive equipment and community integration support.",
+  },
+  {
+    icon: LifeBuoy,
+    title: "Mental Health & Counselling",
+    text: "Therapy sessions, crisis intervention and substance abuse counselling with dignity and respect.",
   },
   {
     icon: Clock,
-    title: "Respite & Overnight Care",
-    text: "Regular or occasional cover to give family carers a well-earned break, day or night.",
+    title: "Respite & Live-in Care",
+    text: "Overnight, live-in and relief cover that gives families and unpaid carers a well-earned break.",
   },
   {
-    icon: Baby,
-    title: "Palliative & End-of-life",
-    text: "Compassionate, dignified support for individuals and their families during difficult times.",
-  },
-  {
-    icon: Sparkles,
-    title: "Companionship",
-    text: "Friendly visits for a chat, a walk or a shared activity — helping to combat loneliness.",
-  },
-  {
-    icon: Stethoscope,
-    title: "Post-Discharge & Rehab",
-    text: "Structured support to help you regain independence after a hospital stay or surgery.",
+    icon: Pill,
+    title: "Additional Support",
+    text: "Caregiver education, transport to appointments, home modifications and support groups.",
   },
 ];
 

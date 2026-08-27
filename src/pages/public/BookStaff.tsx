@@ -139,7 +139,7 @@ export default function BookStaff() {
               For same-week bookings, call our office directly and we'll do our best to help.
             </p>
             <p className="mt-3 flex items-center gap-2 text-sm font-medium">
-              <PhoneCall className="h-4 w-4 text-primary" /> 029 2074 0000
+              <PhoneCall className="h-4 w-4 text-primary" /> <a href="tel:+447801480923" className="hover:text-foreground">+44 7801 480923</a>
             </p>
           </Card>
         </div>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { HeartPulse, Users, Clock, ShieldCheck, ArrowRight, Star, PhoneCall, CalendarCheck, HandHeart } from "lucide-react";
+import { HeartPulse, Users, Clock, ShieldCheck, ArrowRight, Star, PhoneCall, CalendarCheck, HandHeart, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useBlogPosts } from "@/lib/api";
@@ -8,23 +8,23 @@ import { formatDate } from "@/lib/utils";
 const services = [
   {
     icon: HeartPulse,
-    title: "Domiciliary Care",
+    title: "Home Care",
     text: "Personal care, medication and daily living support in the comfort of your own home.",
   },
   {
-    icon: HandHeart,
-    title: "Live-in Care",
-    text: "A dedicated carer living with you around the clock for full peace of mind.",
+    icon: Stethoscope,
+    title: "Medical & Nursing Care",
+    text: "Skilled nursing interventions, medication management and chronic condition support.",
   },
   {
-    icon: Users,
-    title: "Dementia Support",
-    text: "Specialist, patient-centred support for people living with dementia.",
+    icon: HandHeart,
+    title: "Dementia & Palliative Care",
+    text: "Compassionate, person-centred support for people living with dementia and life-limiting illness.",
   },
   {
     icon: Clock,
-    title: "Respite & Overnight",
-    text: "Relief for family carers with flexible daytime and overnight cover.",
+    title: "Respite & Live-in Care",
+    text: "Dedicated live-in or overnight cover to give families and carers a well-earned break.",
   },
 ];
 
@@ -66,8 +66,8 @@ export default function Home() {
               <span className="text-primary">tender love &amp; care</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Manasseh Health Care provides compassionate, professional domiciliary care
-              across South Wales — helping you and your loved ones live safely and
+              Manasseh Health Care provides compassionate, professional care across
+              Swansea and South Wales — helping you and your loved ones live safely and
               independently at home.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -87,7 +87,7 @@ export default function Home() {
                   <Star key={i} className="h-4 w-4 fill-warning text-warning" />
                 ))}
               </div>
-              <span className="text-muted-foreground">Trusted by 120+ families across South Wales</span>
+              <span className="text-muted-foreground">Person-centred care you can trust</span>
             </div>
           </div>
           <div className="relative animate-fade-in-up lg:justify-self-end" style={{ animationDelay: "120ms" }}>
@@ -103,8 +103,8 @@ export default function Home() {
                     <Link to="/book-appointment">Request a call back</Link>
                   </Button>
                   <Button size="lg" variant="ghost" className="border border-white/30 text-white hover:bg-white/10" asChild>
-                    <a href="tel:+442920740000">
-                      <PhoneCall className="h-4 w-4" /> 029 2074 0000
+                    <a href="tel:+447801480923">
+                      <PhoneCall className="h-4 w-4" /> +44 7801 480923
                     </a>
                   </Button>
                 </div>
@@ -168,9 +168,10 @@ export default function Home() {
               Why families choose Manasseh
             </h2>
             <p className="mt-4 max-w-lg leading-relaxed text-white/85">
-              We're a family-run care provider built on trust. Every client is matched
-              with a consistent, familiar team who know their routines, preferences and
-              history — so care feels personal, not transactional.
+              We're a Swansea-based provider built on trust and led by a medical
+              practitioner. Every client is matched with a consistent, familiar team who
+              know their routines, preferences and history — so care feels personal, not
+              transactional.
             </p>
             <ul className="mt-6 space-y-3 text-sm text-white/90">
               <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> Fully regulated and CIW-registered</li>
@@ -180,10 +181,10 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { value: "120+", label: "Families supported" },
-              { value: "12", label: "Care workers" },
-              { value: "5", label: "Years in care" },
+              { value: "2024", label: "Founded in Swansea" },
+              { value: "10+", label: "Care services" },
               { value: "24/7", label: "On-call support" },
+              { value: "CIW", label: "Registered provider" },
             ].map((s) => (
               <div key={s.label} className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
                 <p className="font-display text-4xl font-semibold">{s.value}</p>

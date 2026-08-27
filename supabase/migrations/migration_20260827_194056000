@@ -1,0 +1,4 @@
+update public.job_postings set location = 'Swansea' where location = 'Cardiff';
+update public.job_postings set location = 'Swansea' where location = 'Newport';
+update public.job_postings set description = replace(description, 'across Cardiff.', 'across Swansea and South Wales.');
+update public.job_postings set description = replace(description, 'across Cardiff.', 'across Swansea and South Wales.');
