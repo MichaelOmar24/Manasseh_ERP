@@ -6,6 +6,7 @@ import type { Role } from "@/lib/types";
 
 import Home from "@/pages/public/Home";
 import Services from "@/pages/public/Services";
+import CleaningServices from "@/pages/public/CleaningServices";
 import BookStaff from "@/pages/public/BookStaff";
 import About from "@/pages/public/About";
 import CIWAnnualReturn from "@/pages/public/CIWAnnualReturn";
@@ -74,6 +75,7 @@ export const routers = [
     children: [
       { index: true, element: <Home /> },
       { path: "services", element: <Services /> },
+      { path: "services/cleaning", element: <CleaningServices /> },
       { path: "book-staff", element: <BookStaff /> },
       { path: "about", element: <About /> },
       { path: "ciw-annual-return", element: <CIWAnnualReturn /> },

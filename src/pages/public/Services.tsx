@@ -92,6 +92,25 @@ export default function Services() {
             </Card>
           ))}
         </div>
+
+        <Link to="/services/cleaning">
+          <Card className="group mt-6 flex flex-wrap items-center justify-between gap-4 border-primary/20 bg-primary/5 p-6 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Sparkles className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-display text-xl font-semibold">Cleaning Services</h3>
+                <p className="text-sm text-muted-foreground">
+                  Domestic cleaning, deep cleans and end-of-tenancy cleans — by Manasseh Clean, from £45.
+                </p>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+              View prices <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Card>
+        </Link>
       </section>
 
       <section className="container pb-16 lg:pb-20">

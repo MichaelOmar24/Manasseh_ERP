@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { Menu, Phone, Mail, MapPin, HeartPulse, Facebook, Instagram } from "lucide-react";
+import { Menu, Phone, Mail, MapPin, HeartPulse, Facebook, Instagram, ChevronDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -31,20 +39,48 @@ export function PublicLayout() {
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
-            {navLinks.map((l) => (
-              <NavLink
-                key={l.href}
-                to={l.href}
-                className={({ isActive }) =>
-                  cn(
-                    "rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-                    isActive && "bg-accent text-accent-foreground",
-                  )
-                }
-              >
-                {l.label}
-              </NavLink>
-            ))}
+            {navLinks.map((l) =>
+              l.href === "/services" ? (
+                <DropdownMenu key={l.href}>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className={cn(
+                        "inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+                      )}
+                    >
+                      {l.label}
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-60">
+                    <DropdownMenuLabel>Our services</DropdownMenuLabel>
+                    <DropdownMenuItem asChild>
+                      <Link to="/services">All services</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/services/cleaning" className="gap-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        Cleaning services
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <NavLink
+                  key={l.href}
+                  to={l.href}
+                  className={({ isActive }) =>
+                    cn(
+                      "rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+                      isActive && "bg-accent text-accent-foreground",
+                    )
+                  }
+                >
+                  {l.label}
+                </NavLink>
+              ),
+            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -80,6 +116,14 @@ export function PublicLayout() {
                       {l.label}
                     </NavLink>
                   ))}
+                  <NavLink
+                    to="/services/cleaning"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium text-primary hover:bg-accent"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Cleaning services
+                  </NavLink>
                   <Button asChild className="mt-2">
                     <Link to="/login">Staff &amp; Client Login</Link>
                   </Button>
@@ -138,6 +182,11 @@ export function PublicLayout() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link to="/services/cleaning" className="flex items-center gap-1.5 transition-colors hover:text-sidebar-foreground">
+                  <Sparkles className="h-3.5 w-3.5" /> Cleaning Services
+                </Link>
+              </li>
             </ul>
           </div>
 
