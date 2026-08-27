@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { LogOut, ChevronsUpDown, Home, ShieldCheck } from "lucide-react";
+import { LogOut, ChevronsUpDown, Home, ShieldCheck, Mail } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -18,6 +18,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -151,6 +152,11 @@ export function PortalLayout() {
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-card/60 px-4 backdrop-blur">
           <SidebarTrigger />
+          <Button variant="ghost" size="icon" asChild title="Email info@manassehhealthcare.org" aria-label="Compose email to info@manassehhealthcare.org">
+            <a href="mailto:info@manassehhealthcare.org">
+              <Mail className="h-4 w-4" />
+            </a>
+          </Button>
           <Badge variant="outline" className="ml-auto hidden border-primary/30 bg-primary/10 text-primary sm:inline-flex">
             {ROLE_LABELS[profile.role]}
           </Badge>

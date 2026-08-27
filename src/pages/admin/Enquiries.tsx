@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { MailOpen } from "lucide-react";
+import { MailOpen, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable, type Column } from "@/components/shared/DataTable";
@@ -22,18 +22,28 @@ export default function Enquiries() {
     { header: "Name", cell: (m) => (
       <div>
         <p className="font-medium">{m.name}</p>
-        <p className="text-xs text-muted-foreground">{m.email}</p>
+        <a href={`mailto:${m.email}`} className="text-xs text-primary hover:underline">{m.email}</a>
       </div>
     ) },
     { header: "Subject", cell: (m) => m.subject ?? "—" },
     { header: "Message", cell: (m) => <span className="line-clamp-2 max-w-[300px] text-muted-foreground">{m.message}</span> },
     { header: "Status", cell: (m) => <StatusBadge status={m.status} /> },
     { header: "Actions", cell: (m) => (
-      m.status === "new" ? (
-        <Button size="sm" variant="outline" onClick={() => markReplied(m)}>
-          <MailOpen className="h-4 w-4" /> Mark replied
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm" variant="outline" asChild>
+          <a
+            href={`mailto:${m.email}?subject=${encodeURIComponent("Re: " + (m.subject ?? "Your enquiry"))}`}
+            title="Reply by email"
+          >
+            <Send className="h-4 w-4" /> Reply
+          </a>
         </Button>
-      ) : null
+        {m.status === "new" ? (
+          <Button size="sm" variant="ghost" onClick={() => markReplied(m)}>
+            <MailOpen className="h-4 w-4" /> Mark replied
+          </Button>
+        ) : null}
+      </div>
     ) },
   ];
 
@@ -42,6 +52,13 @@ export default function Enquiries() {
       <PageHeader
         title="Enquiries"
         description="Messages submitted through the public contact form."
+        action={
+          <Button variant="outline" asChild>
+            <a href="mailto:info@manassehhealthcare.org">
+              <Mail className="h-4 w-4" /> Email info@manassehhealthcare.org
+            </a>
+          </Button>
+        }
       />
       <DataTable columns={columns} rows={messages} loading={isLoading} keyOf={(m) => m.id} emptyTitle="No enquiries yet" />
     </div>
