@@ -23,6 +23,7 @@ export type Client = {
   id: string;
   profile_id: string | null;
   reference: string;
+  full_name: string | null;
   date_of_birth: string | null;
   gender: string | null;
   address: string | null;

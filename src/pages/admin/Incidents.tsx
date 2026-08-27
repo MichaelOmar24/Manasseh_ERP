@@ -20,7 +20,7 @@ export default function Incidents() {
   const { data: incidents = [], isLoading } = useIncidents();
   const { mutateAsync } = useTableMutation<Incident>("incidents");
 
-  const setStatus = async (i: Incident, status: string) => {
+  const setStatus = async (i: Incident, status: Incident["status"]) => {
     await mutateAsync({ id: i.id, values: { status, resolved_at: status === "resolved" || status === "closed" ? new Date().toISOString() : i.resolved_at } });
     toast.success(`Incident marked ${status}.`);
   };

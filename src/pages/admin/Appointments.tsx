@@ -20,7 +20,7 @@ export default function Appointments() {
   const { data: appointments = [], isLoading } = useAppointments();
   const { mutateAsync } = useTableMutation<Appointment>("appointments");
 
-  const setStatus = async (a: Appointment, status: string) => {
+  const setStatus = async (a: Appointment, status: Appointment["status"]) => {
     await mutateAsync({ id: a.id, values: { status } });
     toast.success(status === "confirmed" ? "Appointment confirmed." : "Appointment cancelled.");
   };

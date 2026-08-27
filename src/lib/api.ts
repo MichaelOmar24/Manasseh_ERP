@@ -223,11 +223,11 @@ export function useTableMutation<T extends Record<string, unknown>>(table: strin
   return useMutation({
     mutationFn: async (payload: { id?: string; values: Partial<T>; upsert?: boolean }) => {
       if (payload.id) {
-        const { error } = await supabase.from(table as never).update(payload.values).eq("id", payload.id);
+        const { error } = await supabase.from(table as never).update(payload.values as never).eq("id", payload.id);
         if (error) throw error;
         return payload.id;
       }
-      const { data, error } = await supabase.from(table as never).insert(payload.values).select().single();
+      const { data, error } = await supabase.from(table as never).insert(payload.values as never).select().single();
       if (error) throw error;
       return (data as unknown as { id: string }).id;
     },

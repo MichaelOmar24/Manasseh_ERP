@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import type { Appointment } from "@/lib/types";
 
 const timeSlots = [
   "09:00 - 10:00",
@@ -24,7 +25,7 @@ export default function BookAppointment() {
     name: "",
     email: "",
     phone: "",
-    appointment_type: "initial_assessment",
+    appointment_type: "initial_assessment" as Appointment["appointment_type"],
     requested_date: "",
     time_slot: "",
     preferred_contact_method: "phone",
@@ -63,7 +64,7 @@ export default function BookAppointment() {
       name: "",
       email: "",
       phone: "",
-      appointment_type: "initial_assessment",
+      appointment_type: "initial_assessment" as Appointment["appointment_type"],
       requested_date: "",
       time_slot: "",
       preferred_contact_method: "phone",
@@ -104,7 +105,7 @@ export default function BookAppointment() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="type">Appointment type</Label>
-                <Select value={form.appointment_type} onValueChange={(v) => setForm((f) => ({ ...f, appointment_type: v }))}>
+                <Select value={form.appointment_type} onValueChange={(v) => setForm((f) => ({ ...f, appointment_type: v as Appointment["appointment_type"] }))}>
                   <SelectTrigger id="type"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="initial_assessment">Initial care assessment</SelectItem>
