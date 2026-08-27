@@ -59,7 +59,7 @@ export function PortalLayout() {
               <SidebarMenuButton size="lg" asChild className="data-[slot=sidebar-menu-button]:!p-0">
                 <Link to="/">
                   <div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-sidebar-accent p-1.5">
-                    <img src="/assets/manasseh-logo-white.png" alt="Manasseh" className="h-full w-full object-contain" />
+                    <img src="/assets/manasseh-logo-white-full.png" alt="Manasseh" className="h-full w-full object-contain" />
                   </div>
                   <div className="grid flex-1 leading-tight">
                     <span className="font-display text-sm font-semibold">Manasseh Health Care</span>

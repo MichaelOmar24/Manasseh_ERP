@@ -162,7 +162,7 @@ export function PublicLayout() {
         <div className="container grid gap-10 py-14 md:grid-cols-4">
           <div className="md:col-span-1">
             <img
-              src="/assets/manasseh-logo-white.png"
+               src="/assets/manasseh-logo-white-full.png"
               alt="Manasseh Health Care"
               className="h-14 w-auto"
             />

@@ -81,8 +81,8 @@ export default function Login() {
       {/* Brand panel */}
       <div className="gradient-brand relative hidden overflow-hidden p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute inset-0 bg-[radial-gradient(50rem_30rem_at_20%_10%,hsl(0_0%_100%/0.18),transparent)]" />
-        <Link to="/" className="relative">
-          <img src="/assets/manasseh-logo-white.png" alt="Manasseh Health Care" className="h-16 w-auto" />
+        <Link to="/" className="relative inline-flex w-fit items-center rounded-2xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
+          <img src="/assets/manasseh-logo.png" alt="Manasseh Health Care" className="h-12 w-auto" />
         </Link>
         <div className="relative max-w-md">
           <p className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold">
