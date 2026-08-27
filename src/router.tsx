@@ -8,6 +8,7 @@ import Home from "@/pages/public/Home";
 import Services from "@/pages/public/Services";
 import CleaningServices from "@/pages/public/CleaningServices";
 import BookCleaning from "@/pages/public/BookCleaning";
+import RequestCallback from "@/pages/public/RequestCallback";
 import BookStaff from "@/pages/public/BookStaff";
 import About from "@/pages/public/About";
 import CIWAnnualReturn from "@/pages/public/CIWAnnualReturn";
@@ -78,6 +79,7 @@ export const routers = [
       { path: "services", element: <Services /> },
       { path: "services/cleaning", element: <CleaningServices /> },
       { path: "book-cleaning", element: <BookCleaning /> },
+      { path: "request-callback", element: <RequestCallback /> },
       { path: "book-staff", element: <BookStaff /> },
       { path: "about", element: <About /> },
       { path: "ciw-annual-return", element: <CIWAnnualReturn /> },

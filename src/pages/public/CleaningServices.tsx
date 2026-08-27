@@ -179,7 +179,7 @@ export default function CleaningServices() {
                 <Link to="/book-cleaning">Book a clean</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-sidebar-accent bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-accent/80" asChild>
-                <Link to="/book-cleaning">Request a call back</Link>
+                <Link to="/request-callback">Request a call back</Link>
               </Button>
             </div>
           </div>

@@ -100,7 +100,7 @@ export default function Home() {
                 </p>
                 <div className="mt-6 grid gap-3">
                   <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90" asChild>
-                    <Link to="/book-appointment">Request a call back</Link>
+                    <Link to="/request-callback">Request a call back</Link>
                   </Button>
                   <Button size="lg" variant="ghost" className="border border-white/30 text-white hover:bg-white/10" asChild>
                     <a href="tel:+447801480923">
