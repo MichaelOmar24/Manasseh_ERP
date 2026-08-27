@@ -259,6 +259,22 @@ export type JobApplication = {
   cv_url: string | null;
   status: string;
   applied_at: string;
+  date_of_birth: string | null;
+  gender: string | null;
+  marital_status: string | null;
+  nationality: string | null;
+  right_to_work_sharecode: string | null;
+  requires_sponsorship: string | null;
+  dbs_number: string | null;
+  social_care_wales_number: string | null;
+  address: string | null;
+  has_uk_driving_license: string | null;
+  owns_car: string | null;
+  highest_qualification: string | null;
+  job_position: string | null;
+  current_employment: string | null;
+  previous_employment: string | null;
+  care_training: string | null;
   job_postings?: Pick<JobPosting, "id" | "title"> | null;
 };
 

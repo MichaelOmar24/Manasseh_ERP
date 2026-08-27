@@ -1,0 +1,29 @@
+-- CV storage bucket (private; anon upload, staff read)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'cvs',
+  'cvs',
+  false,
+  10 * 1024 * 1024,
+  array['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document']::text[]
+)
+on conflict (id) do nothing;
+
+do $$
+begin
+  if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='cvs_upload_anon') then
+    create policy "cvs_upload_anon" on storage.objects
+      for insert to anon
+      with check (bucket_id = 'cvs' and name like 'cvs/%');
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='cvs_upload_auth') then
+    create policy "cvs_upload_auth" on storage.objects
+      for insert to authenticated
+      with check (bucket_id = 'cvs' and name like 'cvs/%');
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='cvs_read_staff') then
+    create policy "cvs_read_staff" on storage.objects
+      for select to authenticated
+      using (bucket_id = 'cvs' and public.is_staff_office());
+  end if;
+end $$;

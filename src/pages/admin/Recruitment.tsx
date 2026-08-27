@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Plus, Briefcase, FileText } from "lucide-react";
+import { Plus, Briefcase, FileText, Eye, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import { DataTable, type Column } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { useJobPostings, useJobApplications, useTableMutation } from "@/lib/api";
+import { cvUrlToLink } from "@/lib/upload";
 import type { JobApplication, JobPosting } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
@@ -62,7 +63,7 @@ function ApplicationsTab() {
   const columns: Column<JobApplication>[] = [
     { header: "Applicant", cell: (a) => <span className="font-medium">{a.full_name}</span> },
     { header: "Email", cell: (a) => <span className="text-muted-foreground">{a.email}</span> },
-    { header: "Role", cell: (a) => <span className="flex items-center gap-1.5 text-muted-foreground"><Briefcase className="h-3.5 w-3.5" /> {a.job_postings?.title ?? "—"}</span> },
+    { header: "Role", cell: (a) => <span className="flex items-center gap-1.5 text-muted-foreground"><Briefcase className="h-3.5 w-3.5" /> {a.job_position ?? a.job_postings?.title ?? "—"}</span> },
     { header: "Applied", cell: (a) => <span className="text-muted-foreground">{formatDate(a.applied_at)}</span> },
     { header: "Status", cell: (a) => (
       <Select value={a.status} onValueChange={(v) => setStatus(a.id, v)}>
@@ -76,13 +77,140 @@ function ApplicationsTab() {
         </SelectContent>
       </Select>
     ) },
-    { header: "", cell: (a) => (
-      a.cover_letter ? (
-        <span className="text-xs text-muted-foreground">{a.cover_letter.length > 60 ? a.cover_letter.slice(0, 60) + "…" : a.cover_letter}</span>
-      ) : null
-    ) },
+    { header: "", cell: (a) => <ViewApplicationDialog application={a} /> },
   ];
   return <DataTable columns={columns} rows={applications} loading={isLoading} keyOf={(a) => a.id} emptyTitle="No applications yet" />;
+}
+
+function DetailRow({ label, value }: { label: string; value?: string | null }) {
+  return (
+    <div className="rounded-lg border bg-muted/20 p-3">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="mt-0.5 break-words text-sm">{value || "—"}</p>
+    </div>
+  );
+}
+
+function ViewApplicationDialog({ application }: { application: JobApplication }) {
+  const [open, setOpen] = useState(false);
+  const [cvLink, setCvLink] = useState<string | null>(null);
+  const [loadingCv, setLoadingCv] = useState(false);
+
+  const openDialog = async (next: boolean) => {
+    setOpen(next);
+    if (next && application.cv_url) {
+      setLoadingCv(true);
+      const link = await cvUrlToLink(application.cv_url);
+      setCvLink(link);
+      setLoadingCv(false);
+    } else {
+      setCvLink(null);
+    }
+  };
+
+  const groups: { title: string; rows: [string, string | null | undefined][] }[] = [
+    {
+      title: "Personal details",
+      rows: [
+        ["Full name", application.full_name],
+        ["Date of birth", application.date_of_birth ? formatDate(application.date_of_birth) : null],
+        ["Gender", application.gender],
+        ["Marital status", application.marital_status],
+        ["Nationality", application.nationality],
+      ],
+    },
+    {
+      title: "Right to work",
+      rows: [
+        ["Right to work share code", application.right_to_work_sharecode],
+        ["Requires sponsorship / switch", application.requires_sponsorship],
+        ["DBS number", application.dbs_number],
+        ["Social Care Wales number", application.social_care_wales_number],
+      ],
+    },
+    {
+      title: "Contact",
+      rows: [
+        ["Email", application.email],
+        ["Phone", application.phone],
+        ["House address", application.address],
+      ],
+    },
+    {
+      title: "Driving & education",
+      rows: [
+        ["Valid UK driver's licence", application.has_uk_driving_license],
+        ["Owns a car", application.owns_car],
+        ["Highest qualification", application.highest_qualification],
+      ],
+    },
+    {
+      title: "Role & experience",
+      rows: [
+        ["Job position applied for", application.job_position],
+        ["Current employment", application.current_employment],
+        ["Previous employment", application.previous_employment],
+      ],
+    },
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={openDialog}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm"><Eye className="h-4 w-4" /> View</Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{application.full_name}</DialogTitle>
+        </DialogHeader>
+
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-muted/30 p-4">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <span>{application.email}</span>
+            {application.phone ? <span>· {application.phone}</span> : null}
+            <StatusBadge status={application.status} />
+          </div>
+          {application.cv_url ? (
+            loadingCv ? (
+              <span className="text-xs text-muted-foreground">Preparing CV…</span>
+            ) : cvLink ? (
+              <Button size="sm" asChild>
+                <a href={cvLink} target="_blank" rel="noreferrer">
+                  <ExternalLink className="h-4 w-4" /> Open CV
+                </a>
+              </Button>
+            ) : (
+              <span className="text-xs text-muted-foreground">CV unavailable</span>
+            )
+          ) : null}
+        </div>
+
+        {groups.map((g) => (
+          <div key={g.title} className="mb-5">
+            <h3 className="mb-2 font-display font-semibold">{g.title}</h3>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {g.rows.map(([label, value]) => (
+                <DetailRow key={label} label={label} value={value} />
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {application.care_training ? (
+          <div className="mb-5">
+            <h3 className="mb-2 font-display font-semibold">Care training</h3>
+            <p className="whitespace-pre-line rounded-lg border bg-muted/20 p-3 text-sm">{application.care_training}</p>
+          </div>
+        ) : null}
+        {application.cover_letter ? (
+          <div>
+            <h3 className="mb-2 font-display font-semibold">Cover letter</h3>
+            <p className="whitespace-pre-line rounded-lg border bg-muted/20 p-3 text-sm">{application.cover_letter}</p>
+          </div>
+        ) : null}
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 function AddPostingDialog() {

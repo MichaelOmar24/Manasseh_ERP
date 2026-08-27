@@ -3948,36 +3948,84 @@ export type Database = {
       }
       job_applications: {
         Row: {
+          address: string | null
           applied_at: string
+          care_training: string | null
           cover_letter: string | null
+          current_employment: string | null
           cv_url: string | null
+          date_of_birth: string | null
+          dbs_number: string | null
           email: string
           full_name: string
+          gender: string | null
+          has_uk_driving_license: string | null
+          highest_qualification: string | null
           id: string
+          job_position: string | null
           job_posting_id: string | null
+          marital_status: string | null
+          nationality: string | null
+          owns_car: string | null
           phone: string | null
+          previous_employment: string | null
+          requires_sponsorship: string | null
+          right_to_work_sharecode: string | null
+          social_care_wales_number: string | null
           status: string
         }
         Insert: {
+          address?: string | null
           applied_at?: string
+          care_training?: string | null
           cover_letter?: string | null
+          current_employment?: string | null
           cv_url?: string | null
+          date_of_birth?: string | null
+          dbs_number?: string | null
           email: string
           full_name: string
+          gender?: string | null
+          has_uk_driving_license?: string | null
+          highest_qualification?: string | null
           id?: string
+          job_position?: string | null
           job_posting_id?: string | null
+          marital_status?: string | null
+          nationality?: string | null
+          owns_car?: string | null
           phone?: string | null
+          previous_employment?: string | null
+          requires_sponsorship?: string | null
+          right_to_work_sharecode?: string | null
+          social_care_wales_number?: string | null
           status?: string
         }
         Update: {
+          address?: string | null
           applied_at?: string
+          care_training?: string | null
           cover_letter?: string | null
+          current_employment?: string | null
           cv_url?: string | null
+          date_of_birth?: string | null
+          dbs_number?: string | null
           email?: string
           full_name?: string
+          gender?: string | null
+          has_uk_driving_license?: string | null
+          highest_qualification?: string | null
           id?: string
+          job_position?: string | null
           job_posting_id?: string | null
+          marital_status?: string | null
+          nationality?: string | null
+          owns_car?: string | null
           phone?: string | null
+          previous_employment?: string | null
+          requires_sponsorship?: string | null
+          right_to_work_sharecode?: string | null
+          social_care_wales_number?: string | null
           status?: string
         }
         Relationships: [
