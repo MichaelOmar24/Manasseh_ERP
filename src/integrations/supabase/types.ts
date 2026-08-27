@@ -3360,16 +3360,1166 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_type: Database["public"]["Enums"]["appointment_type"]
+          client_id: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          notes: string | null
+          phone: string | null
+          preferred_contact_method: string | null
+          requested_date: string | null
+          status: Database["public"]["Enums"]["appointment_status"]
+          time_slot: string | null
+        }
+        Insert: {
+          appointment_type?: Database["public"]["Enums"]["appointment_type"]
+          client_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_contact_method?: string | null
+          requested_date?: string | null
+          status?: Database["public"]["Enums"]["appointment_status"]
+          time_slot?: string | null
+        }
+        Update: {
+          appointment_type?: Database["public"]["Enums"]["appointment_type"]
+          client_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_contact_method?: string | null
+          requested_date?: string | null
+          status?: Database["public"]["Enums"]["appointment_status"]
+          time_slot?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          content: string | null
+          cover_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published_at: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_author_id_fkey"
+            columns: ["author_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_plan_tasks: {
+        Row: {
+          care_plan_id: string
+          created_at: string
+          frequency: string | null
+          id: string
+          instructions: string | null
+          scheduled_time: string | null
+          title: string
+        }
+        Insert: {
+          care_plan_id: string
+          created_at?: string
+          frequency?: string | null
+          id?: string
+          instructions?: string | null
+          scheduled_time?: string | null
+          title: string
+        }
+        Update: {
+          care_plan_id?: string
+          created_at?: string
+          frequency?: string | null
+          id?: string
+          instructions?: string | null
+          scheduled_time?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_plan_tasks_care_plan_id_fkey"
+            columns: ["care_plan_id"]
+            referencedRelation: "care_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_plans: {
+        Row: {
+          baseline_notes: string | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          review_date: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["care_plan_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          baseline_notes?: string | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          review_date?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["care_plan_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          baseline_notes?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          review_date?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["care_plan_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_plans_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_plans_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          address: string | null
+          allergies: string[] | null
+          care_manager_id: string | null
+          created_at: string
+          date_of_birth: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          full_name: string | null
+          funding_source: string | null
+          gender: string | null
+          gp_name: string | null
+          gp_phone: string | null
+          id: string
+          medical_conditions: string[] | null
+          postcode: string | null
+          profile_id: string | null
+          reference: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          allergies?: string[] | null
+          care_manager_id?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name?: string | null
+          funding_source?: string | null
+          gender?: string | null
+          gp_name?: string | null
+          gp_phone?: string | null
+          id?: string
+          medical_conditions?: string[] | null
+          postcode?: string | null
+          profile_id?: string | null
+          reference: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          allergies?: string[] | null
+          care_manager_id?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name?: string | null
+          funding_source?: string | null
+          gender?: string | null
+          gp_name?: string | null
+          gp_phone?: string | null
+          id?: string
+          medical_conditions?: string[] | null
+          postcode?: string | null
+          profile_id?: string | null
+          reference?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_care_manager_id_fkey"
+            columns: ["care_manager_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clients_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compliance_records: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          expiry_date: string | null
+          id: string
+          issue_date: string | null
+          status: Database["public"]["Enums"]["compliance_status"]
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          status?: Database["public"]["Enums"]["compliance_status"]
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          status?: Database["public"]["Enums"]["compliance_status"]
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          status: string
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+          status?: string
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          status?: string
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          category: string | null
+          created_at: string
+          file_name: string | null
+          file_url: string | null
+          id: string
+          mime_type: string | null
+          owner_id: string | null
+          owner_type: string
+          title: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+          mime_type?: string | null
+          owner_id?: string | null
+          owner_type?: string
+          title: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+          mime_type?: string | null
+          owner_id?: string | null
+          owner_type?: string
+          title?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      incidents: {
+        Row: {
+          action_taken: string | null
+          category: Database["public"]["Enums"]["incident_category"]
+          client_id: string | null
+          description: string
+          id: string
+          reported_at: string
+          reported_by: string | null
+          resolved_at: string | null
+          severity: Database["public"]["Enums"]["incident_severity"]
+          status: Database["public"]["Enums"]["incident_status"]
+          updated_at: string
+          visit_id: string | null
+        }
+        Insert: {
+          action_taken?: string | null
+          category?: Database["public"]["Enums"]["incident_category"]
+          client_id?: string | null
+          description: string
+          id?: string
+          reported_at?: string
+          reported_by?: string | null
+          resolved_at?: string | null
+          severity?: Database["public"]["Enums"]["incident_severity"]
+          status?: Database["public"]["Enums"]["incident_status"]
+          updated_at?: string
+          visit_id?: string | null
+        }
+        Update: {
+          action_taken?: string | null
+          category?: Database["public"]["Enums"]["incident_category"]
+          client_id?: string | null
+          description?: string
+          id?: string
+          reported_at?: string
+          reported_by?: string | null
+          resolved_at?: string | null
+          severity?: Database["public"]["Enums"]["incident_severity"]
+          status?: Database["public"]["Enums"]["incident_status"]
+          updated_at?: string
+          visit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_reported_by_fkey"
+            columns: ["reported_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_visit_id_fkey"
+            columns: ["visit_id"]
+            referencedRelation: "visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_items: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          quantity: number
+          rate: number
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          quantity?: number
+          rate?: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          client_id: string
+          created_at: string
+          due_date: string | null
+          id: string
+          invoice_number: string
+          issue_date: string | null
+          period_end: string | null
+          period_start: string | null
+          status: Database["public"]["Enums"]["invoice_status"]
+          subtotal: number
+          tax: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          issue_date?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          issue_date?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_applications: {
+        Row: {
+          applied_at: string
+          cover_letter: string | null
+          cv_url: string | null
+          email: string
+          full_name: string
+          id: string
+          job_posting_id: string | null
+          phone: string | null
+          status: string
+        }
+        Insert: {
+          applied_at?: string
+          cover_letter?: string | null
+          cv_url?: string | null
+          email: string
+          full_name: string
+          id?: string
+          job_posting_id?: string | null
+          phone?: string | null
+          status?: string
+        }
+        Update: {
+          applied_at?: string
+          cover_letter?: string | null
+          cv_url?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          job_posting_id?: string | null
+          phone?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_posting_id_fkey"
+            columns: ["job_posting_id"]
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_postings: {
+        Row: {
+          created_at: string
+          department: string | null
+          description: string | null
+          employment_type: string | null
+          id: string
+          location: string | null
+          requirements: string | null
+          salary_range: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          location?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          location?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          body: string
+          client_id: string | null
+          created_at: string
+          id: string
+          read_at: string | null
+          receiver_id: string | null
+          sender_id: string | null
+          subject: string | null
+        }
+        Insert: {
+          body: string
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          receiver_id?: string | null
+          sender_id?: string | null
+          subject?: string | null
+        }
+        Update: {
+          body?: string
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          receiver_id?: string | null
+          sender_id?: string | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read_at: string | null
+          title: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string
+          method: string
+          received_at: string
+          recorded_by: string | null
+          reference: string | null
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id: string
+          method?: string
+          received_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+          status?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          method?: string
+          received_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_recorded_by_fkey"
+            columns: ["recorded_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      qualifications: {
+        Row: {
+          created_at: string
+          document_url: string | null
+          expiry_date: string | null
+          id: string
+          issue_date: string | null
+          issuer: string | null
+          staff_id: string
+          title: string
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          document_url?: string | null
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          staff_id: string
+          title: string
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          document_url?: string | null
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          staff_id?: string
+          title?: string
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qualifications_staff_id_fkey"
+            columns: ["staff_id"]
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff: {
+        Row: {
+          contract_type: string | null
+          created_at: string
+          dbs_check_date: string | null
+          dbs_check_status: string
+          department: string | null
+          employment_status: string
+          hourly_rate: number
+          id: string
+          job_title: string | null
+          manager_id: string | null
+          profile_id: string | null
+          staff_number: string
+          start_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          contract_type?: string | null
+          created_at?: string
+          dbs_check_date?: string | null
+          dbs_check_status?: string
+          department?: string | null
+          employment_status?: string
+          hourly_rate?: number
+          id?: string
+          job_title?: string | null
+          manager_id?: string | null
+          profile_id?: string | null
+          staff_number: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contract_type?: string | null
+          created_at?: string
+          dbs_check_date?: string | null
+          dbs_check_status?: string
+          department?: string | null
+          employment_status?: string
+          hourly_rate?: number
+          id?: string
+          job_title?: string | null
+          manager_id?: string | null
+          profile_id?: string | null
+          staff_number?: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_manager_id_fkey"
+            columns: ["manager_id"]
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training: {
+        Row: {
+          completion_date: string | null
+          course_title: string
+          created_at: string
+          expiry_date: string | null
+          id: string
+          provider: string | null
+          staff_id: string
+          status: string
+        }
+        Insert: {
+          completion_date?: string | null
+          course_title: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          provider?: string | null
+          staff_id: string
+          status?: string
+        }
+        Update: {
+          completion_date?: string | null
+          course_title?: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          provider?: string | null
+          staff_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_staff_id_fkey"
+            columns: ["staff_id"]
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visits: {
+        Row: {
+          care_notes: string | null
+          care_plan_id: string | null
+          caregiver_id: string | null
+          check_in_at: string | null
+          check_out_at: string | null
+          client_feedback: string | null
+          client_id: string
+          created_at: string
+          id: string
+          scheduled_end: string | null
+          scheduled_start: string | null
+          status: Database["public"]["Enums"]["visit_status"]
+          updated_at: string
+        }
+        Insert: {
+          care_notes?: string | null
+          care_plan_id?: string | null
+          caregiver_id?: string | null
+          check_in_at?: string | null
+          check_out_at?: string | null
+          client_feedback?: string | null
+          client_id: string
+          created_at?: string
+          id?: string
+          scheduled_end?: string | null
+          scheduled_start?: string | null
+          status?: Database["public"]["Enums"]["visit_status"]
+          updated_at?: string
+        }
+        Update: {
+          care_notes?: string | null
+          care_plan_id?: string | null
+          caregiver_id?: string | null
+          check_in_at?: string | null
+          check_out_at?: string | null
+          client_feedback?: string | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          scheduled_end?: string | null
+          scheduled_start?: string | null
+          status?: Database["public"]["Enums"]["visit_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visits_care_plan_id_fkey"
+            columns: ["care_plan_id"]
+            referencedRelation: "care_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visits_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visits_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      has_visit_with_client: {
+        Args: { cid: string }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_care_manager: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_caregiver: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_client: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_client_owner: {
+        Args: { cid: string }
+        Returns: boolean
+      }
+      is_compliance: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_director: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_finance: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_hr: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_management: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_staff_office: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_super_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      appointment_status: "pending" | "confirmed" | "cancelled" | "completed"
+      appointment_type:
+        | "initial_assessment"
+        | "care_review"
+        | "consultation"
+        | "staff_booking"
+      care_plan_status: "active" | "review" | "archived"
+      compliance_status: "pending" | "active" | "expiring" | "expired"
+      incident_category:
+        | "fall"
+        | "medication"
+        | "behaviour"
+        | "safeguarding"
+        | "other"
+      incident_severity: "low" | "medium" | "high" | "critical"
+      incident_status: "open" | "investigating" | "resolved" | "closed"
+      invoice_status:
+        | "draft"
+        | "sent"
+        | "partial"
+        | "paid"
+        | "overdue"
+        | "cancelled"
+      user_role:
+        | "super_admin"
+        | "director"
+        | "care_manager"
+        | "caregiver"
+        | "client"
+        | "hr_manager"
+        | "finance_officer"
+        | "compliance_officer"
+      visit_status:
+        | "scheduled"
+        | "in_progress"
+        | "completed"
+        | "missed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4606,7 +5756,51 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      appointment_status: ["pending", "confirmed", "cancelled", "completed"],
+      appointment_type: [
+        "initial_assessment",
+        "care_review",
+        "consultation",
+        "staff_booking",
+      ],
+      care_plan_status: ["active", "review", "archived"],
+      compliance_status: ["pending", "active", "expiring", "expired"],
+      incident_category: [
+        "fall",
+        "medication",
+        "behaviour",
+        "safeguarding",
+        "other",
+      ],
+      incident_severity: ["low", "medium", "high", "critical"],
+      incident_status: ["open", "investigating", "resolved", "closed"],
+      invoice_status: [
+        "draft",
+        "sent",
+        "partial",
+        "paid",
+        "overdue",
+        "cancelled",
+      ],
+      user_role: [
+        "super_admin",
+        "director",
+        "care_manager",
+        "caregiver",
+        "client",
+        "hr_manager",
+        "finance_officer",
+        "compliance_officer",
+      ],
+      visit_status: [
+        "scheduled",
+        "in_progress",
+        "completed",
+        "missed",
+        "cancelled",
+      ],
+    },
   },
   realtime: {
     Enums: {

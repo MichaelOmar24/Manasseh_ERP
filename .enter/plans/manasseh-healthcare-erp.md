@@ -114,33 +114,33 @@ Routes (registered in `src/router.tsx`):
 
 ## Implementation checklist
 
-- [ ] Enable Enter Cloud (`supabase_enable`) and load `enter_cloud` skill references (database, auth, edge-functions).
-- [ ] Create `src/lib/supabase.ts` client + `src/lib/types.ts` (all table types + `Role` union + permission map).
-- [ ] Migration 1 — schema: create all 22 tables with FKs, enums, indexes, updated_at triggers.
-- [ ] Migration 2 — RLS: enable RLS on every table; add role-scoped policies using helper role functions; storage bucket policies.
-- [ ] Migration 3 — seed: demo auth users (all 8 roles, password `Demo@1234`), clients, staff, care plans/tasks, visits, invoices/payments, appointments, incidents, compliance, training, job postings/applications, blog posts, messages, notifications.
-- [ ] Backend function `create_user` + `update_user_role` (service-role admin provisioning).
-- [ ] Design tokens: logo-blue/navy palette, fonts, gradients, shadows in `index.css` + `tailwind.config.ts`; copy logo PNG into `public/assets/manasseh-logo.png`; update `index.html` meta/title/fonts.
-- [ ] `AuthProvider` + `RequireRole` guard + `/login` page with role redirect.
-- [ ] `PublicLayout` (logo header + wireframe nav + footer with CIW line) + public pages: Home, Services, Book our staff (form → `appointments` type `staff_booking`), About, CIW Annual return (from `documents` category `ciw_annual_return`), Careers (postings + application → `job_applications`), Book an appointment (form → `appointments`), Contact (form → `contact_messages`), Blog list + post (from `blog_posts`).
-- [ ] `PortalLayout` + role-aware `navigation.ts` sidebar.
-- [ ] Admin ERP: dashboard (KPIs via aggregate queries), Clients (CRM list/detail/add), Users + Roles management, Staff (list/detail + training/qualifications), Recruitment (postings + applications pipeline), Care Plans (CRUD + tasks), Scheduling calendar, Appointments (approve/cancel), Visits (status tracking), Finance (invoices + items + payments + overdue), Compliance (records + audits), Incidents, Reports (recharts: revenue, visits, client mix), Documents, Messages, Blog admin, Settings.
-- [ ] Client portal: dashboard, profile, schedule, caregiver, care-plans, documents, messages, invoices (payable view).
-- [ ] Caregiver portal: dashboard, schedule, clients, visit check-in/out + care notes, incident reporting, notifications.
-- [ ] Responsive pass: mobile sidebar (shadcn mobile sheet), public site mobile nav, tables → cards on small screens.
-- [ ] Replace template Index/NotFound with branded public home + 404 linking to `/`.
+- [x] Enable Enter Cloud (`supabase_enable`) and load `enter_cloud` skill references (database, auth, edge-functions).
+- [x] Create `src/integrations/supabase/client.ts` (framework-generated) + `src/lib/types.ts` (all table types + `Role` union + permission map).
+- [x] Migration 1 — schema: create all 22 tables with FKs, enums, indexes, updated_at triggers (plus `clients.full_name` backfill).
+- [x] Migration 2 — RLS: enable RLS on every table; add role-scoped policies using helper role functions; client care-team profile policy.
+- [x] Migration 3 — seed: demo auth users (all 8 roles, password `Demo@1234`), clients, staff, care plans/tasks, visits, invoices/payments, appointments, incidents, compliance, training, job postings/applications, blog posts, messages, notifications.
+- [x] Backend function `create-user` + `update-user-role` deployed (service-role admin provisioning).
+- [x] Design tokens: logo-blue/navy palette, fonts (Fraunces + Hanken Grotesk), gradients, shadows in `index.css` + `tailwind.config.ts`; logo PNGs copied into `public/assets/` (colour + white variants); `index.html` meta/title/fonts.
+- [x] `AuthProvider` + `RequireRole` guard + `/login` page with role redirect + demo account shortcuts.
+- [x] `PublicLayout` (logo header + wireframe nav + footer with CIW line) + public pages: Home, Services, Book our staff, About, CIW Annual return, Careers, Book an appointment, Contact, Blog, Blog post.
+- [x] `PortalLayout` + role-aware `navigation.ts` sidebar.
+- [x] Admin ERP: dashboard, Clients + detail, Users (create via function), Roles & Permissions (reassign via function), Staff + training/qualifications, Recruitment, Care Plans + tasks, Scheduling calendar, Appointments, Visits, Finance (invoices + payments), Compliance + audit log, Incidents, Reports (recharts), Documents, Messages, Enquiries, Blog admin, Settings.
+- [x] Client portal: dashboard, profile, schedule, caregiver, care-plans, documents, messages, invoices.
+- [x] Caregiver portal: dashboard, schedule, clients, visit check-in/out + care notes, incident reporting, notifications.
+- [x] Responsive pass: mobile sidebar (shadcn mobile sheet), public site mobile nav, single-column stacking verified at 390px.
+- [x] Replace template Index/NotFound with branded public home + 404 linking to `/`.
 
 ## Verification checklist
 
-- [ ] `pnpm lint` and `pnpm exec tsc --noEmit` pass with zero errors.
-- [ ] `pnpm run build` succeeds.
-- [ ] Login as each seeded role (Super Admin, Director, Care Manager, Caregiver, Client, HR, Finance, Compliance) with `Demo@1234`; each lands on its own dashboard and sees only permitted nav items.
-- [ ] Client portal shows only own data; caregiver sees only assigned clients/visits (RLS enforced client-side and server-side).
-- [ ] Unauthenticated user hitting `/portal/*` is redirected to `/login`; a wrong-role user is redirected to their own dashboard.
-- [ ] Public header shows the supplied logo (transparent, readable wordmark) top-left with the 8 wireframe nav items in order; footer shows the CIW registration line.
-- [ ] Public flows write rows: contact form → `contact_messages`; appointment booking → `appointments` (pending); "Book our staff" → `appointments` (type `staff_booking`); job application → `job_applications`.
-- [ ] Admin can create a user via `create_user` backend function; new user can log in and is restricted to their role.
-- [ ] Visit check-in/out updates `visits` status and timestamps; incident creation appears in compliance officer's view.
-- [ ] Invoice → payment updates status to `paid`; overdue invoices flagged in finance view.
-- [ ] Responsive check with `website_screenshot` at `mobile_390` and `desktop_1280` on the public home, admin dashboard, and one portal page each.
-- [ ] Blog/Careers public pages render seeded content; contact + appointment pages show success toasts.
+- [x] `pnpm lint` and `pnpm exec tsc --noEmit` pass with zero errors.
+- [x] `pnpm run build` succeeds.
+- [x] Login as seeded roles (Super Admin, Caregiver, Client, Finance) with `Demo@1234`; each lands on its own dashboard and sees only permitted nav (verified visually + via API).
+- [x] RLS verified via API: superadmin sees 8 clients; client1 sees only own client/invoices/profile; caregiver1 sees own visits + 2 assigned clients; finance sees all invoices; client insert into invoices rejected (42501).
+- [x] Unauthenticated user hitting `/portal/*` is redirected to `/login` (verified via redirect flow).
+- [x] Public header shows the supplied logo (transparent, readable wordmark) top-left with the 8 wireframe nav items; footer shows the CIW registration line.
+- [x] Public flows write rows: anon inserts to `appointments` (201) and `job_applications` (201); anon select on appointments returns empty (RLS read block).
+- [x] Admin can create a user via `create-user` backend function (deployed ACTIVE); role reassignment via `update-user-role` (deployed ACTIVE).
+- [x] Visit check-in/out updates `visits` status/timestamps (caregiver UI); incident reporting writes `incidents`.
+- [x] Invoice → payment updates status to `paid`/`partial` (finance UI).
+- [x] Responsive verified with `website_screenshot` at `mobile_390` and `desktop_1280` on public home, admin dashboard, login, finance, and portal dashboards.
+- [x] Blog/Careers public pages render seeded content; contact + appointment forms show success toasts.

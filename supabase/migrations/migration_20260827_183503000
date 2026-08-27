@@ -1,0 +1,356 @@
+-- ============================================================
+-- Manasseh Health Care ERP - Schema + RLS (ordered)
+-- ============================================================
+create extension if not exists pgcrypto;
+
+-- ---------- Enums ----------
+do $$ begin create type public.user_role as enum ('super_admin','director','care_manager','caregiver','client','hr_manager','finance_officer','compliance_officer'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.care_plan_status as enum ('active','review','archived'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.appointment_status as enum ('pending','confirmed','cancelled','completed'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.appointment_type as enum ('initial_assessment','care_review','consultation','staff_booking'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.visit_status as enum ('scheduled','in_progress','completed','missed','cancelled'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.incident_severity as enum ('low','medium','high','critical'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.incident_category as enum ('fall','medication','behaviour','safeguarding','other'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.incident_status as enum ('open','investigating','resolved','closed'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.invoice_status as enum ('draft','sent','partial','paid','overdue','cancelled'); exception when duplicate_object then null; end $$;
+do $$ begin create type public.compliance_status as enum ('pending','active','expiring','expired'); exception when duplicate_object then null; end $$;
+
+-- ---------- Generic triggers ----------
+create or replace function public.set_updated_at()
+returns trigger language plpgsql as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+-- ---------- profiles ----------
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text not null,
+  full_name text,
+  phone text,
+  avatar_url text,
+  role public.user_role not null default 'client',
+  status text not null default 'active',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.profiles (id, email, full_name, role)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data ->> 'full_name', split_part(new.email, '@', 1)),
+    coalesce((new.raw_user_meta_data ->> 'role')::public.user_role, 'client')
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- ---------- clients ----------
+create table if not exists public.clients (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid references public.profiles(id) on delete set null,
+  reference text not null unique,
+  date_of_birth date,
+  gender text,
+  address text,
+  postcode text,
+  emergency_contact_name text,
+  emergency_contact_phone text,
+  medical_conditions text[] default '{}',
+  allergies text[] default '{}',
+  gp_name text,
+  gp_phone text,
+  care_manager_id uuid references public.profiles(id) on delete set null,
+  funding_source text default 'self_funded',
+  status text not null default 'active',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- staff ----------
+create table if not exists public.staff (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid references public.profiles(id) on delete cascade,
+  staff_number text not null unique,
+  department text,
+  job_title text,
+  employment_status text not null default 'active',
+  hourly_rate numeric(10,2) not null default 0,
+  contract_type text,
+  manager_id uuid references public.staff(id) on delete set null,
+  dbs_check_status text not null default 'pending',
+  dbs_check_date date,
+  start_date date,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- care_plans ----------
+create table if not exists public.care_plans (
+  id uuid primary key default gen_random_uuid(),
+  client_id uuid not null references public.clients(id) on delete cascade,
+  title text not null,
+  description text,
+  baseline_notes text,
+  start_date date,
+  review_date date,
+  end_date date,
+  status public.care_plan_status not null default 'active',
+  created_by uuid references public.profiles(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- care_plan_tasks ----------
+create table if not exists public.care_plan_tasks (
+  id uuid primary key default gen_random_uuid(),
+  care_plan_id uuid not null references public.care_plans(id) on delete cascade,
+  title text not null,
+  instructions text,
+  frequency text default 'daily',
+  scheduled_time time,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- appointments ----------
+create table if not exists public.appointments (
+  id uuid primary key default gen_random_uuid(),
+  client_id uuid references public.clients(id) on delete set null,
+  name text,
+  email text,
+  phone text,
+  appointment_type public.appointment_type not null default 'initial_assessment',
+  requested_date date,
+  time_slot text,
+  status public.appointment_status not null default 'pending',
+  notes text,
+  preferred_contact_method text,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- visits ----------
+create table if not exists public.visits (
+  id uuid primary key default gen_random_uuid(),
+  client_id uuid not null references public.clients(id) on delete cascade,
+  caregiver_id uuid references public.profiles(id) on delete set null,
+  care_plan_id uuid references public.care_plans(id) on delete set null,
+  scheduled_start timestamptz,
+  scheduled_end timestamptz,
+  check_in_at timestamptz,
+  check_out_at timestamptz,
+  status public.visit_status not null default 'scheduled',
+  care_notes text,
+  client_feedback text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- incidents ----------
+create table if not exists public.incidents (
+  id uuid primary key default gen_random_uuid(),
+  visit_id uuid references public.visits(id) on delete set null,
+  client_id uuid references public.clients(id) on delete set null,
+  reported_by uuid references public.profiles(id) on delete set null,
+  severity public.incident_severity not null default 'medium',
+  category public.incident_category not null default 'other',
+  description text not null,
+  action_taken text,
+  status public.incident_status not null default 'open',
+  reported_at timestamptz not null default now(),
+  resolved_at timestamptz,
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- invoices ----------
+create table if not exists public.invoices (
+  id uuid primary key default gen_random_uuid(),
+  client_id uuid not null references public.clients(id) on delete cascade,
+  invoice_number text not null unique,
+  issue_date date default current_date,
+  due_date date,
+  period_start date,
+  period_end date,
+  subtotal numeric(10,2) not null default 0,
+  tax numeric(10,2) not null default 0,
+  total numeric(10,2) not null default 0,
+  status public.invoice_status not null default 'draft',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- invoice_items ----------
+create table if not exists public.invoice_items (
+  id uuid primary key default gen_random_uuid(),
+  invoice_id uuid not null references public.invoices(id) on delete cascade,
+  description text not null,
+  quantity numeric(10,2) not null default 1,
+  rate numeric(10,2) not null default 0,
+  amount numeric(10,2) not null default 0,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- payments ----------
+create table if not exists public.payments (
+  id uuid primary key default gen_random_uuid(),
+  invoice_id uuid not null references public.invoices(id) on delete cascade,
+  amount numeric(10,2) not null,
+  method text not null default 'bank_transfer',
+  reference text,
+  received_at timestamptz not null default now(),
+  status text not null default 'confirmed',
+  recorded_by uuid references public.profiles(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- messages ----------
+create table if not exists public.messages (
+  id uuid primary key default gen_random_uuid(),
+  sender_id uuid references public.profiles(id) on delete set null,
+  receiver_id uuid references public.profiles(id) on delete set null,
+  client_id uuid references public.clients(id) on delete set null,
+  subject text,
+  body text not null,
+  read_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- notifications ----------
+create table if not exists public.notifications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  title text not null,
+  body text,
+  type text default 'info',
+  link text,
+  read_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- documents ----------
+create table if not exists public.documents (
+  id uuid primary key default gen_random_uuid(),
+  owner_id uuid,
+  owner_type text not null default 'client',
+  title text not null,
+  category text,
+  file_url text,
+  file_name text,
+  mime_type text,
+  uploaded_by uuid references public.profiles(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- qualifications ----------
+create table if not exists public.qualifications (
+  id uuid primary key default gen_random_uuid(),
+  staff_id uuid not null references public.staff(id) on delete cascade,
+  title text not null,
+  issuer text,
+  issue_date date,
+  expiry_date date,
+  verified boolean default false,
+  document_url text,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- training ----------
+create table if not exists public.training (
+  id uuid primary key default gen_random_uuid(),
+  staff_id uuid not null references public.staff(id) on delete cascade,
+  course_title text not null,
+  provider text,
+  completion_date date,
+  expiry_date date,
+  status text not null default 'completed',
+  created_at timestamptz not null default now()
+);
+
+-- ---------- compliance_records ----------
+create table if not exists public.compliance_records (
+  id uuid primary key default gen_random_uuid(),
+  entity_type text not null default 'staff',
+  entity_id uuid,
+  title text not null,
+  type text not null default 'certificate',
+  status public.compliance_status not null default 'active',
+  issue_date date,
+  expiry_date date,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- audit_logs ----------
+create table if not exists public.audit_logs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references public.profiles(id) on delete set null,
+  action text not null,
+  entity_type text,
+  entity_id uuid,
+  details jsonb,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- job_postings ----------
+create table if not exists public.job_postings (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  department text,
+  location text,
+  employment_type text,
+  salary_range text,
+  description text,
+  requirements text,
+  status text not null default 'open',
+  created_at timestamptz not null default now()
+);
+
+-- ---------- job_applications ----------
+create table if not exists public.job_applications (
+  id uuid primary key default gen_random_uuid(),
+  job_posting_id uuid references public.job_postings(id) on delete set null,
+  full_name text not null,
+  email text not null,
+  phone text,
+  cover_letter text,
+  cv_url text,
+  status text not null default 'new',
+  applied_at timestamptz not null default now()
+);
+
+-- ---------- blog_posts ----------
+create table if not exists public.blog_posts (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  slug text not null unique,
+  excerpt text,
+  content text,
+  cover_url text,
+  author_id uuid references public.profiles(id) on delete set null,
+  status text not null default 'draft',
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- contact_messages ----------
+create table if not exists public.contact_messages (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  phone text,
+  subject text,
+  message text not null,
+  status text not null default 'new',
+  created_at timestamptz not null default now()
+);

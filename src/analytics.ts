@@ -56,7 +56,12 @@ async function loadEventDefinitions(): Promise<EventDefinition[]> {
 }
 
 export function bootstrapGeneratedSiteAnalytics(): void {
-  bootstrapEnterAnalytics();
+  try {
+    bootstrapEnterAnalytics();
+  } catch {
+    // Analytics must never block app startup (e.g. storage blocked in a
+    // sandboxed context). Fail silently.
+  }
 
   void loadEventDefinitions().then((definitions) => {
     if (definitions.length > 0) {

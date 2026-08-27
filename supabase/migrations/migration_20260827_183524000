@@ -1,0 +1,206 @@
+-- ---------- Role helper functions (security definer to avoid RLS recursion) ----------
+create or replace function public.current_role() returns public.user_role
+language sql stable security definer set search_path = public as
+$$ select (select role from public.profiles where id = auth.uid()) $$;
+
+create or replace function public.is_super_admin() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'super_admin' $$;
+create or replace function public.is_director() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'director' $$;
+create or replace function public.is_care_manager() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'care_manager' $$;
+create or replace function public.is_caregiver() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'caregiver' $$;
+create or replace function public.is_client() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'client' $$;
+create or replace function public.is_hr() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'hr_manager' $$;
+create or replace function public.is_finance() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'finance_officer' $$;
+create or replace function public.is_compliance() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() = 'compliance_officer' $$;
+create or replace function public.is_admin() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() in ('super_admin','director') $$;
+create or replace function public.is_management() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() in ('super_admin','director','care_manager') $$;
+create or replace function public.is_staff_office() returns boolean
+language sql stable security definer set search_path = public as $$ select public.current_role() in ('super_admin','director','care_manager','hr_manager','finance_officer','compliance_officer') $$;
+create or replace function public.has_visit_with_client(cid uuid) returns boolean
+language sql stable security definer set search_path = public as
+$$ select exists (select 1 from public.visits v where v.client_id = cid and v.caregiver_id = auth.uid()) $$;
+create or replace function public.is_client_owner(cid uuid) returns boolean
+language sql stable security definer set search_path = public as
+$$ select exists (select 1 from public.clients c where c.id = cid and c.profile_id = auth.uid()) $$;
+
+-- ---------- updated_at triggers ----------
+create trigger set_profiles_updated_at before update on public.profiles for each row execute function public.set_updated_at();
+create trigger set_clients_updated_at before update on public.clients for each row execute function public.set_updated_at();
+create trigger set_staff_updated_at before update on public.staff for each row execute function public.set_updated_at();
+create trigger set_care_plans_updated_at before update on public.care_plans for each row execute function public.set_updated_at();
+create trigger set_visits_updated_at before update on public.visits for each row execute function public.set_updated_at();
+create trigger set_incidents_updated_at before update on public.incidents for each row execute function public.set_updated_at();
+create trigger set_invoices_updated_at before update on public.invoices for each row execute function public.set_updated_at();
+create trigger set_compliance_records_updated_at before update on public.compliance_records for each row execute function public.set_updated_at();
+create trigger set_blog_posts_updated_at before update on public.blog_posts for each row execute function public.set_updated_at();
+
+-- ---------- RLS enable ----------
+alter table public.profiles enable row level security;
+alter table public.clients enable row level security;
+alter table public.staff enable row level security;
+alter table public.care_plans enable row level security;
+alter table public.care_plan_tasks enable row level security;
+alter table public.appointments enable row level security;
+alter table public.visits enable row level security;
+alter table public.incidents enable row level security;
+alter table public.invoices enable row level security;
+alter table public.invoice_items enable row level security;
+alter table public.payments enable row level security;
+alter table public.messages enable row level security;
+alter table public.notifications enable row level security;
+alter table public.documents enable row level security;
+alter table public.qualifications enable row level security;
+alter table public.training enable row level security;
+alter table public.compliance_records enable row level security;
+alter table public.audit_logs enable row level security;
+alter table public.job_postings enable row level security;
+alter table public.job_applications enable row level security;
+alter table public.blog_posts enable row level security;
+alter table public.contact_messages enable row level security;
+
+-- ---------- Policies ----------
+create policy "profiles_select" on public.profiles for select using (id = auth.uid() or public.is_staff_office() or public.is_caregiver());
+create policy "profiles_insert" on public.profiles for insert with check (public.is_admin());
+create policy "profiles_update" on public.profiles for update using (id = auth.uid() or public.is_admin()) with check (id = auth.uid() or public.is_admin());
+create policy "profiles_delete" on public.profiles for delete using (public.is_admin());
+
+create policy "clients_select" on public.clients for select using (public.is_staff_office() or public.has_visit_with_client(id) or profile_id = auth.uid());
+create policy "clients_insert" on public.clients for insert with check (public.is_management());
+create policy "clients_update" on public.clients for update using (public.is_management());
+create policy "clients_delete" on public.clients for delete using (public.is_management());
+
+create policy "staff_select" on public.staff for select using (public.is_staff_office() or profile_id = auth.uid());
+create policy "staff_insert" on public.staff for insert with check (public.is_admin() or public.is_hr());
+create policy "staff_update" on public.staff for update using (public.is_admin() or public.is_hr());
+create policy "staff_delete" on public.staff for delete using (public.is_admin() or public.is_hr());
+
+create policy "care_plans_select" on public.care_plans for select using (public.is_staff_office() or public.has_visit_with_client(client_id) or public.is_client_owner(client_id));
+create policy "care_plans_insert" on public.care_plans for insert with check (public.is_management());
+create policy "care_plans_update" on public.care_plans for update using (public.is_management());
+create policy "care_plans_delete" on public.care_plans for delete using (public.is_management());
+
+create policy "care_plan_tasks_select" on public.care_plan_tasks for select using (exists (select 1 from public.care_plans cp where cp.id = care_plan_id and (public.is_staff_office() or public.has_visit_with_client(cp.client_id) or public.is_client_owner(cp.client_id))));
+create policy "care_plan_tasks_insert" on public.care_plan_tasks for insert with check (public.is_management());
+create policy "care_plan_tasks_update" on public.care_plan_tasks for update using (public.is_management());
+create policy "care_plan_tasks_delete" on public.care_plan_tasks for delete using (public.is_management());
+
+create policy "appointments_insert" on public.appointments for insert with check (true);
+create policy "appointments_select" on public.appointments for select using (public.is_staff_office() or (client_id is not null and public.is_client_owner(client_id)));
+create policy "appointments_update" on public.appointments for update using (public.is_management());
+create policy "appointments_delete" on public.appointments for delete using (public.is_management());
+
+create policy "visits_select" on public.visits for select using (public.is_staff_office() or caregiver_id = auth.uid() or public.is_client_owner(client_id));
+create policy "visits_insert" on public.visits for insert with check (public.is_management());
+create policy "visits_update" on public.visits for update using (public.is_management() or (public.is_caregiver() and caregiver_id = auth.uid()));
+create policy "visits_delete" on public.visits for delete using (public.is_management());
+
+create policy "incidents_insert" on public.incidents for insert with check (public.is_staff_office() or public.is_caregiver());
+create policy "incidents_select" on public.incidents for select using (public.is_staff_office() or reported_by = auth.uid());
+create policy "incidents_update" on public.incidents for update using (public.is_admin() or public.is_care_manager() or public.is_compliance());
+create policy "incidents_delete" on public.incidents for delete using (public.is_admin());
+
+create policy "invoices_select" on public.invoices for select using (public.is_staff_office() or public.is_client_owner(client_id));
+create policy "invoices_insert" on public.invoices for insert with check (public.is_admin() or public.is_finance());
+create policy "invoices_update" on public.invoices for update using (public.is_admin() or public.is_finance());
+create policy "invoices_delete" on public.invoices for delete using (public.is_admin() or public.is_finance());
+
+create policy "invoice_items_select" on public.invoice_items for select using (public.is_staff_office() or exists (select 1 from public.invoices i where i.id = invoice_id and public.is_client_owner(i.client_id)));
+create policy "invoice_items_insert" on public.invoice_items for insert with check (public.is_admin() or public.is_finance());
+create policy "invoice_items_update" on public.invoice_items for update using (public.is_admin() or public.is_finance());
+create policy "invoice_items_delete" on public.invoice_items for delete using (public.is_admin() or public.is_finance());
+
+create policy "payments_select" on public.payments for select using (public.is_staff_office() or exists (select 1 from public.invoices i where i.id = invoice_id and public.is_client_owner(i.client_id)));
+create policy "payments_insert" on public.payments for insert with check (public.is_admin() or public.is_finance());
+create policy "payments_update" on public.payments for update using (public.is_admin() or public.is_finance());
+create policy "payments_delete" on public.payments for delete using (public.is_admin() or public.is_finance());
+
+create policy "messages_insert" on public.messages for insert with check (auth.role() = 'authenticated');
+create policy "messages_select" on public.messages for select using (sender_id = auth.uid() or receiver_id = auth.uid() or (client_id is not null and public.is_client_owner(client_id)));
+create policy "messages_update" on public.messages for update using (sender_id = auth.uid() or receiver_id = auth.uid() or (client_id is not null and public.is_client_owner(client_id)));
+create policy "messages_delete" on public.messages for delete using (sender_id = auth.uid() or receiver_id = auth.uid());
+
+create policy "notifications_select" on public.notifications for select using (user_id = auth.uid());
+create policy "notifications_insert" on public.notifications for insert with check (public.is_staff_office());
+create policy "notifications_update" on public.notifications for update using (user_id = auth.uid());
+create policy "notifications_delete" on public.notifications for delete using (user_id = auth.uid());
+
+create policy "documents_select" on public.documents for select using (public.is_staff_office() or owner_id = auth.uid() or (owner_type = 'client' and public.is_client_owner(owner_id)) or (owner_type = 'client' and public.has_visit_with_client(owner_id)));
+create policy "documents_insert" on public.documents for insert with check (public.is_staff_office() or owner_id = auth.uid());
+create policy "documents_update" on public.documents for update using (public.is_staff_office() or owner_id = auth.uid());
+create policy "documents_delete" on public.documents for delete using (public.is_staff_office() or owner_id = auth.uid());
+
+create policy "qualifications_select" on public.qualifications for select using (public.is_staff_office() or exists (select 1 from public.staff s where s.id = staff_id and s.profile_id = auth.uid()));
+create policy "qualifications_insert" on public.qualifications for insert with check (public.is_admin() or public.is_hr());
+create policy "qualifications_update" on public.qualifications for update using (public.is_admin() or public.is_hr());
+create policy "qualifications_delete" on public.qualifications for delete using (public.is_admin() or public.is_hr());
+
+create policy "training_select" on public.training for select using (public.is_staff_office() or exists (select 1 from public.staff s where s.id = staff_id and s.profile_id = auth.uid()));
+create policy "training_insert" on public.training for insert with check (public.is_admin() or public.is_hr());
+create policy "training_update" on public.training for update using (public.is_admin() or public.is_hr());
+create policy "training_delete" on public.training for delete using (public.is_admin() or public.is_hr());
+
+create policy "compliance_select" on public.compliance_records for select using (public.is_staff_office());
+create policy "compliance_insert" on public.compliance_records for insert with check (public.is_admin() or public.is_compliance() or public.is_hr());
+create policy "compliance_update" on public.compliance_records for update using (public.is_admin() or public.is_compliance() or public.is_hr());
+create policy "compliance_delete" on public.compliance_records for delete using (public.is_admin() or public.is_compliance());
+
+create policy "audit_logs_select" on public.audit_logs for select using (public.is_admin() or public.is_compliance());
+create policy "audit_logs_insert" on public.audit_logs for insert with check (public.is_admin());
+
+create policy "job_postings_select" on public.job_postings for select using (status = 'open' or public.is_admin() or public.is_hr());
+create policy "job_postings_insert" on public.job_postings for insert with check (public.is_admin() or public.is_hr());
+create policy "job_postings_update" on public.job_postings for update using (public.is_admin() or public.is_hr());
+create policy "job_postings_delete" on public.job_postings for delete using (public.is_admin() or public.is_hr());
+
+create policy "job_applications_insert" on public.job_applications for insert with check (true);
+create policy "job_applications_select" on public.job_applications for select using (public.is_admin() or public.is_hr());
+create policy "job_applications_update" on public.job_applications for update using (public.is_admin() or public.is_hr());
+create policy "job_applications_delete" on public.job_applications for delete using (public.is_admin() or public.is_hr());
+
+create policy "blog_posts_select" on public.blog_posts for select using (status = 'published' or public.is_admin() or public.is_management());
+create policy "blog_posts_insert" on public.blog_posts for insert with check (public.is_admin() or public.is_management());
+create policy "blog_posts_update" on public.blog_posts for update using (public.is_admin() or public.is_management());
+create policy "blog_posts_delete" on public.blog_posts for delete using (public.is_admin() or public.is_management());
+
+create policy "contact_messages_insert" on public.contact_messages for insert with check (true);
+create policy "contact_messages_select" on public.contact_messages for select using (public.is_staff_office());
+create policy "contact_messages_update" on public.contact_messages for update using (public.is_staff_office());
+
+-- ---------- Indexes ----------
+create index if not exists idx_clients_profile on public.clients(profile_id);
+create index if not exists idx_clients_care_manager on public.clients(care_manager_id);
+create index if not exists idx_staff_profile on public.staff(profile_id);
+create index if not exists idx_care_plans_client on public.care_plans(client_id);
+create index if not exists idx_care_plan_tasks_plan on public.care_plan_tasks(care_plan_id);
+create index if not exists idx_visits_client on public.visits(client_id);
+create index if not exists idx_visits_caregiver on public.visits(caregiver_id);
+create index if not exists idx_visits_start on public.visits(scheduled_start);
+create index if not exists idx_incidents_client on public.incidents(client_id);
+create index if not exists idx_invoices_client on public.invoices(client_id);
+create index if not exists idx_invoices_status on public.invoices(status);
+create index if not exists idx_invoice_items_invoice on public.invoice_items(invoice_id);
+create index if not exists idx_payments_invoice on public.payments(invoice_id);
+create index if not exists idx_messages_receiver on public.messages(receiver_id);
+create index if not exists idx_messages_sender on public.messages(sender_id);
+create index if not exists idx_messages_client on public.messages(client_id);
+create index if not exists idx_notifications_user on public.notifications(user_id);
+create index if not exists idx_documents_owner on public.documents(owner_id);
+create index if not exists idx_qualifications_staff on public.qualifications(staff_id);
+create index if not exists idx_training_staff on public.training(staff_id);
+create index if not exists idx_compliance_entity on public.compliance_records(entity_id);
+create index if not exists idx_job_applications_posting on public.job_applications(job_posting_id);
+create index if not exists idx_blog_posts_published on public.blog_posts(published_at);
+create index if not exists idx_appointments_status on public.appointments(status);
+
+-- Realtime for live visit + notification updates
+alter publication supabase_realtime add table public.visits;
+alter publication supabase_realtime add table public.notifications;

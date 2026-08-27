@@ -1,0 +1,11 @@
+create policy "profiles_select_care_team" on public.profiles
+for select using (
+  public.is_client()
+  and (
+    id in (
+      select v.caregiver_id from public.visits v
+      where v.client_id in (select c.id from public.clients c where c.profile_id = auth.uid())
+    )
+    or id in (select c.care_manager_id from public.clients c where c.profile_id = auth.uid())
+  )
+);
