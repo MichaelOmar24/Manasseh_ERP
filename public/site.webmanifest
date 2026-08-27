@@ -1,0 +1,21 @@
+{
+  "name": "Manasseh Health Care",
+  "short_name": "Manasseh Care",
+  "description": "Manasseh Health Care Management System — compassionate home care across Swansea and South Wales.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d7ab8",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
