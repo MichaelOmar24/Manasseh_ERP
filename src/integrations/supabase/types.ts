@@ -4076,6 +4076,54 @@ export type Database = {
         }
         Relationships: []
       }
+      mail_messages: {
+        Row: {
+          body_html: string | null
+          body_text: string | null
+          created_at: string
+          date: string | null
+          direction: string
+          from_email: string | null
+          from_name: string | null
+          id: string
+          message_id: string | null
+          seen: boolean
+          subject: string | null
+          to_email: string | null
+          uid: number | null
+        }
+        Insert: {
+          body_html?: string | null
+          body_text?: string | null
+          created_at?: string
+          date?: string | null
+          direction?: string
+          from_email?: string | null
+          from_name?: string | null
+          id?: string
+          message_id?: string | null
+          seen?: boolean
+          subject?: string | null
+          to_email?: string | null
+          uid?: number | null
+        }
+        Update: {
+          body_html?: string | null
+          body_text?: string | null
+          created_at?: string
+          date?: string | null
+          direction?: string
+          from_email?: string | null
+          from_name?: string | null
+          id?: string
+          message_id?: string | null
+          seen?: boolean
+          subject?: string | null
+          to_email?: string | null
+          uid?: number | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string

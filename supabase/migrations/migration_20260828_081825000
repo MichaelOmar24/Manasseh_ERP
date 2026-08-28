@@ -1,0 +1,22 @@
+create table if not exists public.mail_messages (
+  id uuid primary key default gen_random_uuid(),
+  message_id text,
+  uid bigint,
+  from_name text,
+  from_email text,
+  to_email text,
+  subject text,
+  body_text text,
+  body_html text,
+  date timestamptz,
+  seen boolean not null default false,
+  direction text not null default 'inbound',
+  created_at timestamptz not null default now()
+);
+create unique index if not exists idx_mail_messages_message_id on public.mail_messages(message_id);
+create index if not exists idx_mail_messages_date on public.mail_messages(date desc);
+alter table public.mail_messages enable row level security;
+create policy "mail_messages_select" on public.mail_messages for select using (public.is_staff_office());
+create policy "mail_messages_insert" on public.mail_messages for insert with check (public.is_staff_office());
+create policy "mail_messages_update" on public.mail_messages for update using (public.is_staff_office());
+create policy "mail_messages_delete" on public.mail_messages for delete using (public.is_staff_office());
