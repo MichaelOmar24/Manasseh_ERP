@@ -37,6 +37,7 @@ import AdminIncidents from "@/pages/admin/Incidents";
 import AdminReports from "@/pages/admin/Reports";
 import AdminDocuments from "@/pages/admin/Documents";
 import AdminMessages from "@/pages/admin/Messages";
+import AdminEmail from "@/pages/admin/Email";
 import AdminEnquiries from "@/pages/admin/Enquiries";
 import AdminBlog from "@/pages/admin/BlogAdmin";
 import AdminSettings from "@/pages/admin/Settings";
@@ -117,6 +118,7 @@ export const routers = [
       ...adminChild("reports", ["super_admin", "director", "finance_officer"], <AdminReports />),
       ...adminChild("documents", ["super_admin", "director", "care_manager", "hr_manager", "finance_officer", "compliance_officer"], <AdminDocuments />),
       ...adminChild("messages", ["super_admin", "director", "care_manager", "hr_manager", "finance_officer", "compliance_officer"], <AdminMessages />),
+      ...adminChild("email", ["super_admin", "director", "care_manager", "hr_manager", "finance_officer", "compliance_officer"], <AdminEmail />),
       ...adminChild("enquiries", ["super_admin", "director", "care_manager"], <AdminEnquiries />),
       ...adminChild("blog", ["super_admin", "director", "care_manager"], <AdminBlog />),
       ...adminChild("settings", ["super_admin"], <AdminSettings />),

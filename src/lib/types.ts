@@ -304,6 +304,22 @@ export type ContactMessage = {
   created_at: string;
 };
 
+export type MailMessage = {
+  id: string;
+  message_id: string | null;
+  uid: number | null;
+  from_name: string | null;
+  from_email: string | null;
+  to_email: string | null;
+  subject: string | null;
+  body_text: string | null;
+  body_html: string | null;
+  date: string | null;
+  seen: boolean;
+  direction: "inbound" | "sent";
+  created_at: string;
+};
+
 export const ROLE_LABELS: Record<Role, string> = {
   super_admin: "Super Administrator",
   director: "Director",

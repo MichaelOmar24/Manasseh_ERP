@@ -25,6 +25,7 @@ import {
   Pill,
   Wallet,
   GraduationCap,
+  Mail,
   type LucideIcon,
 } from "lucide-react";
 
@@ -63,6 +64,7 @@ export const adminNav: NavItem[] = [
   { title: "Reports", href: "/portal/admin/reports", icon: BarChart3, roles: ["super_admin", "director", "finance_officer"] },
   { title: "Documents", href: "/portal/admin/documents", icon: FolderOpen, roles: ["super_admin", "director", "care_manager", "hr_manager", "finance_officer", "compliance_officer"] },
   { title: "Messages", href: "/portal/admin/messages", icon: MessageSquare, roles: ["super_admin", "director", "care_manager", "hr_manager", "finance_officer", "compliance_officer"] },
+  { title: "Email", href: "/portal/admin/email", icon: Mail, roles: ["super_admin", "director", "care_manager", "hr_manager", "finance_officer", "compliance_officer"] },
   { title: "Enquiries", href: "/portal/admin/enquiries", icon: ClipboardList, roles: ["super_admin", "director", "care_manager"] },
   { title: "Blog", href: "/portal/admin/blog", icon: Newspaper, roles: ["super_admin", "director", "care_manager"] },
   { title: "Settings", href: "/portal/admin/settings", icon: Settings, roles: ["super_admin"] },

@@ -14,6 +14,7 @@ import type {
   InvoiceItem,
   JobApplication,
   JobPosting,
+  MailMessage,
   Message,
   Notification,
   Payment,
@@ -214,6 +215,19 @@ export const useBlogPosts = () =>
   });
 export const useContactMessages = () =>
   useQuery({ ...list<ContactMessage>("contact_messages"), queryKey: ["contact_messages"] });
+export const useMailMessages = () =>
+  useQuery({
+    queryKey: ["mail_messages"],
+    queryFn: async (): Promise<MailMessage[]> => {
+      const { data, error } = await supabase
+        .from("mail_messages")
+        .select("*")
+        .order("date", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return (data ?? []) as unknown as MailMessage[];
+    },
+  });
 export const useAuditLogs = () =>
   useQuery({ ...list<{ id: string; action: string; created_at: string; details: unknown }>("audit_logs"), queryKey: ["audit_logs"] });
 
