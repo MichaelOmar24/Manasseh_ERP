@@ -88,9 +88,14 @@ export default function Contact() {
 
         <div className="space-y-4 lg:col-span-2">
           <Card className="p-6 shadow-soft">
-            <h3 className="font-display text-lg font-semibold">Head office</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-display text-lg font-semibold">Head office</h3>
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                <MapPin className="h-3 w-3" /> New address
+              </span>
+            </div>
             <div className="mt-4 space-y-3 text-sm text-muted-foreground">
-              <p className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> 9 Kilvey Terrace, St Thomas, Swansea, SA1 8BA, Wales</p>
+              <p className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Flat 1, 5 Upper Portland Street, Aberystwyth, SY23 2DT, Ceredigion</p>
               <p className="flex items-center gap-2"><PhoneCall className="h-4 w-4 text-primary" /> <a href="tel:+447801480923" className="hover:text-foreground">+44 7801 480923</a></p>
               <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary" /> <a href="mailto:info@manassehhealthcare.org" className="hover:text-foreground">info@manassehhealthcare.org</a></p>
               <p className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> Mon–Fri, 9am–5pm</p>

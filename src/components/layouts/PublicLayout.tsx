@@ -220,7 +220,7 @@ export function PublicLayout() {
             <ul className="mt-4 space-y-3 text-sm text-sidebar-foreground/80">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-                9 Kilvey Terrace, St Thomas,<br />Swansea SA1 8BA
+                Flat 1, 5 Upper Portland Street,<br />Aberystwyth, SY23 2DT, Ceredigion
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 shrink-0" />

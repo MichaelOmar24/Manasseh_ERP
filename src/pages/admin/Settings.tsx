@@ -18,7 +18,7 @@ export default function Settings() {
             </div>
           </div>
           <div className="mt-5 space-y-2 text-sm text-muted-foreground">
-            <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> 9 Kilvey Terrace, St Thomas, Swansea, SA1 8BA</p>
+            <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> Flat 1, 5 Upper Portland Street, Aberystwyth, SY23 2DT, Ceredigion</p>
             <p className="flex items-center gap-2"><HeartPulse className="h-4 w-4 text-primary" /> <a href="mailto:info@manassehhealthcare.org" className="hover:text-foreground">info@manassehhealthcare.org</a> · <a href="tel:+447801480923" className="hover:text-foreground">+44 7801 480923</a></p>
             <p className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Registered with the Care Inspectorate Wales</p>
           </div>
