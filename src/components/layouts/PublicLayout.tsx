@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { Menu, Phone, Mail, MapPin, HeartPulse, Facebook, Instagram, ChevronDown, Sparkles, LogIn, LayoutDashboard } from "lucide-react";
+import { Menu, Phone, Mail, MapPin, HeartPulse, Facebook, Instagram, ChevronDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -12,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/context/auth";
-import { rolePortal } from "@/lib/navigation";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -27,7 +25,6 @@ const navLinks = [
 
 export function PublicLayout() {
   const [open, setOpen] = useState(false);
-  const { user, profile } = useAuth();
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -87,21 +84,6 @@ export function PublicLayout() {
           </nav>
 
           <div className="flex items-center gap-2">
-            {user && profile ? (
-              <Button variant="outline" asChild className="hidden sm:inline-flex">
-                <Link to={rolePortal(profile.role)}>
-                  <LayoutDashboard className="h-4 w-4" />
-                  My portal
-                </Link>
-              </Button>
-            ) : (
-              <Button variant="ghost" asChild className="hidden sm:inline-flex">
-                <Link to="/login">
-                  <LogIn className="h-4 w-4" />
-                  Login
-                </Link>
-              </Button>
-            )}
             <Button asChild className="hidden sm:inline-flex">
               <Link to="/book-appointment">Book an appointment</Link>
             </Button>
@@ -142,11 +124,6 @@ export function PublicLayout() {
                     <Sparkles className="h-4 w-4" />
                     Cleaning services
                   </NavLink>
-                  <Button asChild className="mt-2">
-                    <Link to="/login">
-                      <LogIn className="h-4 w-4" /> Login
-                    </Link>
-                  </Button>
                 </div>
               </SheetContent>
             </Sheet>
@@ -189,11 +166,6 @@ export function PublicLayout() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link to="/login" className="flex items-center gap-1.5 transition-colors hover:text-sidebar-foreground">
-                  <LogIn className="h-3.5 w-3.5" /> Staff &amp; client login
-                </Link>
-              </li>
             </ul>
           </div>
 
